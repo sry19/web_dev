@@ -7,21 +7,17 @@
       
     <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script> <!--a compiler that transforms JSX into regulare JS based React.createElement() calls-->
+     <!--Babel: a compiler that transforms JSX into regulare JS based React.createElement() calls-->
+     <!--we'll no longer need the runtime transformer to be loaded in index.html, so we can get rid of the babel-core script library specification-->
 </head>
 
 <body>
+    <!--a division or a section in an HTML document. The <div> element is often used as a container for other HTML elements to style them with CSS or to perform certain tasks with JavaScript.-->
     <div id="contents"></div>
-
-    <script type="text/babel"> {/*tells babel to transform this script*/}
-        const element = (
-            <div title="Outer div">
-                <h1>Hello World!</h1>
-            </div>
-        );
-        ReactDOM.render(element, document.getElementById('contents'));
-
-    </script>
+    <!--tells babel to transform this script-->
+    <!--in order to transform JSX to plain js, we need to install core Babel library and a command-line interface-->
+    <script src="/App.js"></script>
+        
 </body>
 
 </html>
