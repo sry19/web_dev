@@ -10,6 +10,7 @@ app.listen(3000, function() { // start the server and wait eternally for request
     console.log('App started on port 3000'); // Ctrl+C to stop the server.
     /*
     start using 'npm start'
+    watch for changes using 'npm run watch'
 
     if the address is already used, then use
     sudo lsof -i :portNumber
