@@ -1,9 +1,10 @@
-const fs = require('fs') // use 'fs' module and readFaileSync function to read the file
+const fs = require('fs'); // use 'fs' module and readFaileSync function to read the file
 const express = require('express');//import the module and get the function that the module exports
 
 // GraphQL
 const { ApolloServer } = require('apollo-server-express');
-let aboutMessage = "Issue Tracker API v1.0";
+const { GraphQLScalarType } = require('graphql');
+const { Kind } = require('graphql/language');
 
 const issuesDB = [
     {
@@ -18,6 +19,24 @@ const issuesDB = [
     }
 ];
 
+let aboutMessage = "Issue Tracker API v1.0";
+
+const GraphQLDate = new GraphQLScalarType({
+    name: 'GraphQLDate',
+    description: 'A Date() type in GraphQL as a scalar',
+    serialize(value) {
+        return value.toISOString();
+    },
+    parseValue(value) {
+        return new Date(value);
+    },
+    parseLiteral(ast) {
+        return (ast.kind == Kind.STRING) ? new Date(ast.value) : undefined;
+    },
+  });
+
+
+
 // About API
 // List API
 const resolvers = {
@@ -27,11 +46,21 @@ const resolvers = {
     },
     Mutation: {
       setAboutMessage,
+      issueAdd,
     },
+    GraphQLDate,
   };
 
   function setAboutMessage(_, { message }) {
     return aboutMessage = message;
+  }
+
+  function issueAdd(_, { issue }) {
+      issue.created = new Date();
+      issue.id = issuesDB.length + 1;
+      if (issue.status == undefined) issue.status = 'New';
+      issuesDB.push(issue);
+      return issue;
   }
 
   function issueList() {
