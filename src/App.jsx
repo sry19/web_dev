@@ -83,6 +83,32 @@ class IssueAdd extends React.Component {
     }
 }
 
+
+async function graphQLFetch(query, variables = {}) {
+    try {
+      const response = await fetch('/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ query, variables })
+      });
+      const body = await response.text();
+      const result = JSON.parse(body, jsonDateReviver);
+  
+      if (result.errors) {
+        const error = result.errors[0];
+        if (error.extensions.code == 'BAD_USER_INPUT') {
+          const details = error.extensions.exception.errors.join('\n ');
+          alert(`${error.message}:\n ${details}`);
+        } else {
+          alert(`${error.extensions.code}: ${error.message}`);
+        }
+      }
+      return result.data;
+    } catch (e) {
+      alert(`Error in sending data to server: ${e.message}`);
+    }
+  }
+
 {/**parent */}
 {/**you should be able to use double quotes in the title of a newly added issue without causing any errors. */}
 class IssueList extends React.Component { 
@@ -91,21 +117,6 @@ class IssueList extends React.Component {
         this.state = { issues: [] };
         {/**to make this always refer to IssueList, otherwise, this.state would be undefined */}
         this.createIssue = this.createIssue.bind(this);
-    }
-
-    async createIssue(issue) {
-        const query = `mutation issueAdd($issue: IssueInputs!) {
-            issueAdd(issue: $issue) {
-                id
-            }
-        }`;
-
-        const response = await fetch('/graphql', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify({ query, variables: { issue } })   
-        });
-        this.loadData();
     }
 
     componentDidMount() {
@@ -120,15 +131,24 @@ class IssueList extends React.Component {
           }
         }`;
     
-        const response = await fetch('/graphql', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json'},
-          body: JSON.stringify({ query })
-        });
-        const body = await response.text();
-        const result = JSON.parse(body, jsonDateReviver);
-        this.setState({ issues: result.data.issueList });
+        const data = await graphQLFetch(query);
+        if (data) {
+            this.setState({ issues: data.issueList });
+        }
       }
+
+    async createIssue(issue) {
+        const query = `mutation issueAdd($issue: IssueInputs!) {
+            issueAdd(issue: $issue) {
+                id
+            }
+        }`;
+
+        const data = await graphQLFetch(query, { issue });
+        if (data) {
+            this.loadData();
+        }
+    }
 
     render() {
         return (

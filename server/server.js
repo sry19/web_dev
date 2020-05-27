@@ -25,32 +25,32 @@ const GraphQLDate = new GraphQLScalarType({
     name: 'GraphQLDate',
     description: 'A Date() type in GraphQL as a scalar',
     serialize(value) {
-        return value.toISOString();
+      return value.toISOString();
     },
     parseValue(value) {
-        const dateValue = new Date(value);
-        return isNaN(dateValue) ? undefined : dateValue;
-      },
-      parseLiteral(ast) {
-        if (ast.kind == Kind.STRING) {
-          const value = new Date(ast.value);
-          return isNaN(value) ? undefined : value;
-        }
-      },
+      const dateValue = new Date(value);
+      return isNaN(dateValue) ? undefined : dateValue;
+    },
+    parseLiteral(ast) {
+      if (ast.kind == Kind.STRING) {
+        const value = new Date(ast.value);
+        return isNaN(value) ? undefined : value;
+      }
+    },
   });
 
-function issueValidate(issue) {
+  function issueValidate(issue) {
     const errors = [];
     if (issue.title.length < 3) {
-        errors.push('Field "title" must be at least 3 characters long.');
+      errors.push('Field "title" must be at least 3 characters long.');
     }
-    if (issue.status == 'Assigned' && !issue.owner) {
-        errors.push('Field "owner" is required when status is "Assigned"');
+    if (issue.status === 'Assigned' && !issue.owner) {
+      errors.push('Field "owner" is required when status is "Assigned"');
     }
     if (errors.length > 0) {
-        throw new UserInputError('Invalid input(s)', { errors });
+      throw new UserInputError('Invalid input(s)', { errors });
     }
-}
+  }
 
 // About API
 // List API
@@ -71,11 +71,11 @@ const resolvers = {
   }
 
   function issueAdd(_, { issue }) {
-      issueValidate(issue);
-      issue.created = new Date();
-      issue.id = issuesDB.length + 1;
-      issuesDB.push(issue);
-      return issue;
+    issueValidate(issue);
+    issue.created = new Date();
+    issue.id = issuesDB.length + 1;
+    issuesDB.push(issue);
+    return issue;
   }
 
   function issueList() {
@@ -85,13 +85,13 @@ const resolvers = {
   /*
   use the string that 'readFileSync' returned as the value for the property 'typeDefs' when creating the Apollo Server
   */
-  const server = new ApolloServer({
+ const server = new ApolloServer({
     typeDefs: fs.readFileSync('./server/schema.graphql', 'utf-8'),
     resolvers,
     formatError: error => {
-        console.log(error);
-        return error;
-    }
+      console.log(error);
+      return error;
+    },
   });
 
 const app = express(); //instantiate an application

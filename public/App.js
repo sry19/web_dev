@@ -124,6 +124,74 @@ var IssueAdd = /*#__PURE__*/function (_React$Component2) {
   return IssueAdd;
 }(React.Component);
 
+function graphQLFetch(_x) {
+  return _graphQLFetch.apply(this, arguments);
+}
+
+function _graphQLFetch() {
+  _graphQLFetch = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(query) {
+    var variables,
+        response,
+        body,
+        result,
+        error,
+        details,
+        _args3 = arguments;
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            variables = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : {};
+            _context3.prev = 1;
+            _context3.next = 4;
+            return fetch('/graphql', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                query: query,
+                variables: variables
+              })
+            });
+
+          case 4:
+            response = _context3.sent;
+            _context3.next = 7;
+            return response.text();
+
+          case 7:
+            body = _context3.sent;
+            result = JSON.parse(body, jsonDateReviver);
+
+            if (result.errors) {
+              error = result.errors[0];
+
+              if (error.extensions.code == 'BAD_USER_INPUT') {
+                details = error.extensions.exception.errors.join('\n ');
+                alert("".concat(error.message, ":\n ").concat(details));
+              } else {
+                alert("".concat(error.extensions.code, ": ").concat(error.message));
+              }
+            }
+
+            return _context3.abrupt("return", result.data);
+
+          case 13:
+            _context3.prev = 13;
+            _context3.t0 = _context3["catch"](1);
+            alert("Error in sending data to server: ".concat(_context3.t0.message));
+
+          case 16:
+          case "end":
+            return _context3.stop();
+        }
+      }
+    }, _callee3, null, [[1, 13]]);
+  }));
+  return _graphQLFetch.apply(this, arguments);
+}
+
 {
   /**parent */
 }
@@ -153,32 +221,31 @@ var IssueList = /*#__PURE__*/function (_React$Component3) {
   }
 
   _createClass(IssueList, [{
-    key: "createIssue",
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.loadData();
+    }
+  }, {
+    key: "loadData",
     value: function () {
-      var _createIssue = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(issue) {
-        var query, response;
+      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var query, data;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                query = "mutation issueAdd($issue: IssueInputs!) {\n            issueAdd(issue: $issue) {\n                id\n            }\n        }";
+                query = "query {\n          issueList {\n            id title status owner\n            created effort due\n          }\n        }";
                 _context.next = 3;
-                return fetch('/graphql', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    query: query,
-                    variables: {
-                      issue: issue
-                    }
-                  })
-                });
+                return graphQLFetch(query);
 
               case 3:
-                response = _context.sent;
-                this.loadData();
+                data = _context.sent;
+
+                if (data) {
+                  this.setState({
+                    issues: data.issueList
+                  });
+                }
 
               case 5:
               case "end":
@@ -188,51 +255,35 @@ var IssueList = /*#__PURE__*/function (_React$Component3) {
         }, _callee, this);
       }));
 
-      function createIssue(_x) {
-        return _createIssue.apply(this, arguments);
+      function loadData() {
+        return _loadData.apply(this, arguments);
       }
 
-      return createIssue;
+      return loadData;
     }()
   }, {
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.loadData();
-    }
-  }, {
-    key: "loadData",
+    key: "createIssue",
     value: function () {
-      var _loadData = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-        var query, response, body, result;
+      var _createIssue = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(issue) {
+        var query, data;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                query = "query {\n          issueList {\n            id title status owner\n            created effort due\n          }\n        }";
+                query = "mutation issueAdd($issue: IssueInputs!) {\n            issueAdd(issue: $issue) {\n                id\n            }\n        }";
                 _context2.next = 3;
-                return fetch('/graphql', {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify({
-                    query: query
-                  })
+                return graphQLFetch(query, {
+                  issue: issue
                 });
 
               case 3:
-                response = _context2.sent;
-                _context2.next = 6;
-                return response.text();
+                data = _context2.sent;
 
-              case 6:
-                body = _context2.sent;
-                result = JSON.parse(body, jsonDateReviver);
-                this.setState({
-                  issues: result.data.issueList
-                });
+                if (data) {
+                  this.loadData();
+                }
 
-              case 9:
+              case 5:
               case "end":
                 return _context2.stop();
             }
@@ -240,11 +291,11 @@ var IssueList = /*#__PURE__*/function (_React$Component3) {
         }, _callee2, this);
       }));
 
-      function loadData() {
-        return _loadData.apply(this, arguments);
+      function createIssue(_x2) {
+        return _createIssue.apply(this, arguments);
       }
 
-      return loadData;
+      return createIssue;
     }()
   }, {
     key: "render",
