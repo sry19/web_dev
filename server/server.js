@@ -124,3 +124,17 @@ app.listen(3000, function() { // start the server and wait eternally for request
     sudo kill -9 (PID)
     */
 });
+
+/** 
+ Run mongod with command-line parameters: 
+ mongod --dbpath /usr/local/var/mongodb --logpath /usr/local/var/log/mongodb/mongo.log --fork
+
+ Run mongod with a configuration file:
+ mongod --config /usr/local/etc/mongod.conf
+
+ Verify that MongoDB has started successfully:
+ ps aux | grep -v grep | grep mongod
+
+ Begin using MongoDB:
+ mongo
+ */
