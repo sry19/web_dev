@@ -6,18 +6,25 @@ const { ApolloServer, UserInputError } = require('apollo-server-express');
 const { GraphQLScalarType } = require('graphql');
 const { Kind } = require('graphql/language');
 
-const issuesDB = [
-    {
-        id: 1, status: 'New', owner: 'Ravan', effort: 5,
-        created: new Date('2019-01-15'), due: undefined,
-        title: 'Error in console when clicking Add',
-    },
-    {
-        id: 2, status: 'Assigned', owner: 'Eddie', effort: 14,
-        created: new Date('2019-01-16'), due: new Date('2019-02-01'),
-        title: 'Missing bottom border on panel'
-    }
-];
+// Mongo
+const { MongoClient } = require('mongodb');
+
+const url = 'mongodb://localhost/issuetracker';
+// Atlas URL - replace UUU with user, PPP with password, XXX with hostname
+// const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
+// mLab URL - replace UUU with user, PPP with password, XXX with hostname 
+// const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
+
+let db;
+
+async function getNextSequence(name) {
+    const result = await db.collection('counters').findOneAndUpdate(
+      { _id: name },
+      { $inc: { current: 1 } },
+      { returnOriginal: false },
+    );
+    return result.value.current;
+  }
 
 let aboutMessage = "Issue Tracker API v1.0";
 
@@ -70,16 +77,27 @@ const resolvers = {
     return aboutMessage = message;
   }
 
-  function issueAdd(_, { issue }) {
+  async function issueAdd(_, { issue }) {
     issueValidate(issue);
     issue.created = new Date();
-    issue.id = issuesDB.length + 1;
-    issuesDB.push(issue);
-    return issue;
+    issue.id = await getNextSequence('issues');
+
+    const result = await db.collection('issues').insertOne(issue);
+    const savedIssue = await db.collection('issues')
+    .findOne({ _id: result.insertedId });
+    return savedIssue;
   }
 
-  function issueList() {
-      return issuesDB;
+  async function issueList() {
+      const issues = await db.collection('issues').find({}).toArray();
+      return issues;
+  }
+
+  async function connectToDb() {
+    const client = new MongoClient(url, { useNewUrlParser: true });
+    await client.connect();
+    console.log('Connected to MongoDB at', url);
+    db = client.db();
   }
   
   /*
@@ -110,22 +128,33 @@ app.use('/public', express.static('public'));
 
 server.applyMiddleware({ app, path: '/graphql' });
 
-app.listen(3000, function() { // start the server and wait eternally for requests
-    console.log('App started on port 3000'); // Ctrl+C to stop the server.
-    /*
-    start using 'npm start'
-    watch for changes using 'npm run watch'
+(async function () {
+    try {
+        await connectToDb();
+        /*
+        start using 'npm start'
+        watch for changes using 'npm run watch'
 
-    if the address is already used, then use
-    sudo lsof -i :portNumber
-    to find the process, and use
-    kill (PID)
-    to kill this process which is currently using the port using its PID, if the port is not closed, use
-    sudo kill -9 (PID)
-    */
-});
+        if the address is already used, then use
+        sudo lsof -i :portNumber
+        to find the process, and use
+        kill (PID)
+        to kill this process which is currently using the port using its PID, if the port is not closed, use
+        sudo kill -9 (PID)
+        */
+       app.listen(3000, function () {
+        console.log('App started on port 3000');
+      });
+    } catch (err) {
+      console.log('ERROR:', err);
+    }
+  })();
+
+    
 
 /** 
+ https://docs.mongodb.com/manual/administration/install-enterprise/
+
  Run mongod with command-line parameters: 
  mongod --dbpath /usr/local/var/mongodb --logpath /usr/local/var/log/mongodb/mongo.log --fork
 
