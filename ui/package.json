@@ -1,0 +1,39 @@
+{
+  "name": "pro-mern-stack-2-ui",
+  "version": "1.0.0",
+  "description": "Pro MERN Stack (2nd Edition) - UI",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -w uiserver.js -w .env uiserver.js",
+    "lint": "eslint . --ext js,jsx --ignore-pattern public",
+    "compile": "babel src --out-dir public",
+    "watch": "babel src --out-dir public --watch --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sry19/web_dev.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sry19/web_dev/issues"
+  },
+  "homepage": "https://github.com/sry19/web_dev#readme",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "http-proxy-middleware": "^0.21.0",
+    "nodemon": "^1.18.9"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb": "^17.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.20.0"
+  }
+}
