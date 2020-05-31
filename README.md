@@ -24,3 +24,6 @@ step3: Click on install and follow the rest of the instructions in prompt to rei
     xcode-select --install
 * Error: Cannot find module 'graphql/validation/rules/PossibleTypeExtensions'
     This issue is related to the version of graphql, so I uninstalled graphql and reinstalled the lastest version.
+
+issues have not solved:
+* (Multiple Environments) cannot use the environment variable to change the port number

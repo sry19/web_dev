@@ -1,3 +1,5 @@
+/* globals React ReactDOM PropTypes */
+
 class IssueFilter extends React.Component {
     render() {
         return (
@@ -57,6 +59,7 @@ function IssueTable(props) {
 
 
 class IssueAdd extends React.Component {
+
     constructor() {
         super();
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -82,6 +85,10 @@ class IssueAdd extends React.Component {
         );
     }
 }
+
+IssueAdd.propTypes = {
+    createIssue: PropTypes.func.isRequired,
+};
 
 
 async function graphQLFetch(query, variables = {}) {
