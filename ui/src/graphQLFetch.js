@@ -1,0 +1,33 @@
+const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
+
+function jsonDateReviver(key, value) {
+    // if it is a date, return a Date object, otherwise, value remains unchanged
+    if (dateRegex.test(value)) return new Date(value);
+    return value;
+}
+
+export default async function graphQLFetch(query, variables = {}) {
+    try {
+        {/**As for the transformation, you could, within the ui directory, either run npm run compile or npm run watch. But the API calls will fail because the endpoint /graphql has no handlers in the UI server. So, instead of making API calls to the UI server, we need to change the UI to call the API server. */}
+      const response = await fetch(window.ENV.UI_API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json'},
+        body: JSON.stringify({ query, variables })
+      });
+      const body = await response.text();
+      const result = JSON.parse(body, jsonDateReviver);
+  
+      if (result.errors) {
+        const error = result.errors[0];
+        if (error.extensions.code == 'BAD_USER_INPUT') {
+          const details = error.extensions.exception.errors.join('\n ');
+          alert(`${error.message}:\n ${details}`);
+        } else {
+          alert(`${error.extensions.code}: ${error.message}`);
+        }
+      }
+      return result.data;
+    } catch (e) {
+      alert(`Error in sending data to server: ${e.message}`);
+    }
+  }
