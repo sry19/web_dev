@@ -3,6 +3,7 @@
 Ch5:
 summary
 * What is GraphQL: https://www.zhihu.com/question/264629587
+* What is GraphQL: https://juejin.im/post/5c87b1776fb9a049ac7a0247
 * the nodemon tool that restarts the server on detecting changes to files by default only looks for changes to files with a .js extension. To make it watch for changes to other extensions, we need to add an -e option specifying all the extensions it needs to watch for. Since we added a file with extension .graphql, let’s specify js and graphql as the two extensions for this option.
 
  issues and errors:
