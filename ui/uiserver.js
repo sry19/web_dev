@@ -1,5 +1,6 @@
 const express = require('express');// import the module and get the function that the module exports
 require('dotenv').config();
+const path = require('path');
 const proxy = require('http-proxy-middleware');
 
 const apiProxyTarget = process.env.API_PROXY_TARGET;
@@ -47,6 +48,10 @@ const env = { UI_API_ENDPOINT };
 
 app.get('/env.js', (req, res) => {
   res.send(`window.ENV = ${JSON.stringify(env)}`);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve('public/index.html'));
 });
 
 const port = process.env.UI_SERVER_PORT || 8000;
