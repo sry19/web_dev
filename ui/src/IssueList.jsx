@@ -3,8 +3,12 @@ import React from 'react';
 import IssueFilter from './IssueFilter.jsx';
 import IssueTable from './IssueTable.jsx';
 import IssueAdd from './IssueAdd.jsx';
+import IssueDetail from './IssueDetail.jsx';
+
 import graphQLFetch from './graphQLFetch.js';
 import URLSearchParams from 'url-search-params';
+import { Route } from 'react-router-dom';
+
 
 {/**parent */}
 {/**you should be able to use double quotes in the title of a newly added issue without causing any errors. */}
@@ -61,14 +65,20 @@ export default class IssueList extends React.Component {
     }
 
     render() {
+        const { issues } = this.state;
+        const { match } = this.props;
+
         return (
             <React.Fragment>
                 <h1>Issue Tracker</h1>
                 <IssueFilter />
                 <hr />
-                <IssueTable issues={this.state.issues}/>
+                <IssueTable issues={issues}/>
                 <hr />
                 <IssueAdd createIssue={this.createIssue}/>
+                <hr />
+                {/** let’s use the path as matched in the parent component, using this.props.match.path. This is so that even if the parent path changes for any reason, the change is isolated to one place. */}
+                <Route path={`${match.path}/:id`} component={IssueDetail} />
             </React.Fragment>
         );
     }
