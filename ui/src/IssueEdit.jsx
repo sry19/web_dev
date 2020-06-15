@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import graphQLFetch from './graphQLFetch.js';
 import NumInput from './NumInput.jsx';
 import DateInput from './DateInput.jsx';
+import TextInput from './TextInput.jsx';
 
 export default class IssueEdit extends React.Component {
     constructor() {
@@ -62,16 +63,7 @@ export default class IssueEdit extends React.Component {
 
         const { match: {params: {id} } } = this.props;
         const data = await graphQLFetch(query, {id: parseInt(id, 10)});
-        if (data) {
-            const {issue} = data;
-            // issue.due = issue.due ? issue.due.toDateString() : '';
-            // issue.effort = issue.effort != null ? issue.effort.toString() : '';
-            issue.owner = issue.owner != null ? issue.owner : '';
-            issue.description = issue.description != null ? issue.description : '';
-            this.setState({ issue, invalidFields: {} });
-        } else {
-            this.setState({ issue: {}, invalidFields: {} });
-        }
+        this.setState({ issue: data ? data.issue : {}, invalidFields: {} });
     }
 
     render() {
@@ -120,7 +112,7 @@ export default class IssueEdit extends React.Component {
                         <tr>
                             <td>Owner:</td>
                             <td>
-                                <input name="owner" value={owner} onChange={this.onChange} />
+                                <TextInput name="owner" value={owner} onChange={this.onChange} key={id} />
                             </td>
                         </tr>
                         <tr>
@@ -139,13 +131,13 @@ export default class IssueEdit extends React.Component {
                         <tr>
                             <td>Title:</td>
                             <td>
-                                <input size={50} name="title" value={title} onChange={this.onChange} />
+                                <TextInput size={50} name="title" value={title} onChange={this.onChange} key={id} />
                             </td>
                         </tr>
                         <tr>
                             <td>Description:</td>
                             <td>
-                                <textarea rows={8} cols={50} name="description" value={description} onChange={this.onChange} key={id} />
+                                <TextInput tag="textarea" rows={8} cols={50} name="description" value={description} onChange={this.onChange} key={id} />
                             </td>
                         </tr>
                         <tr>
