@@ -41,8 +41,13 @@ Ch9:
 
 summary:
 * What is route and router: https://blog.csdn.net/jigetage/article/details/80938700
+* routing: direct to 
 
 issues and errors:
 * If I implement the 'select' button, I find that there is an error : INTERNAL_SERVER_ERROR: Variable "$id" got invalid value "2"; Int cannot represent non-integer value: "2".
 It is because I use "graphql": "^15.0.0" instead of 0.13.2 because I may get another problem. Basically, the 'id' getting passed in to the graphql query is a string, and it's not being parsed into an int as it should be. We can fix this by making the following change in the loadData function in IssueDetail.jsx (ui):
 const data = await graphQLFetch(query, { id: parseInt(id, 10) });
+
+mangod: mongo server // runnning in the background all the time
+mango: mongo client
+object in mongodb: document
