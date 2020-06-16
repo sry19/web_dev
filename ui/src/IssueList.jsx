@@ -8,6 +8,7 @@ import IssueDetail from './IssueDetail.jsx';
 import graphQLFetch from './graphQLFetch.js';
 import URLSearchParams from 'url-search-params';
 import { Route } from 'react-router-dom';
+import { Panel } from 'react-bootstrap';
 
 
 {/**parent */}
@@ -127,14 +128,21 @@ export default class IssueList extends React.Component {
 
         return (
             <React.Fragment>
-                <IssueFilter />
+                <Panel>
+                    <Panel.Heading>
+                        <Panel.Title toggle>Filter</Panel.Title>
+                    </Panel.Heading>
+                    <Panel.Body collapsible>
+                        <IssueFilter />
+                    </Panel.Body>
+                </Panel>
                 <hr />
                 <IssueTable issues={issues} closeIssue={this.closeIssue} deleteIssue={this.deleteIssue} />
                 <hr />
                 <IssueAdd createIssue={this.createIssue}/>
                 <hr />
                 {/** let’s use the path as matched in the parent component, using this.props.match.path. This is so that even if the parent path changes for any reason, the change is isolated to one place. */}
-                <Route path={`${match.path}/:id`} component={IssueDetail} />
+                <Route path={`${match.path}/:id`} component={IssueDetail} />    
             </React.Fragment>
         );
     }
