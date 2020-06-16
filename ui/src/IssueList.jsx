@@ -138,9 +138,7 @@ export default class IssueList extends React.Component {
                 </Panel>
                 <hr />
                 <IssueTable issues={issues} closeIssue={this.closeIssue} deleteIssue={this.deleteIssue} />
-                <hr />
                 <IssueAdd createIssue={this.createIssue}/>
-                <hr />
                 {/** let’s use the path as matched in the parent component, using this.props.match.path. This is so that even if the parent path changes for any reason, the change is isolated to one place. */}
                 <Route path={`${match.path}/:id`} component={IssueDetail} />    
             </React.Fragment>
