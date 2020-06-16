@@ -6,7 +6,7 @@ function jsonDateReviver(key, value) {
     return value;
 }
 
-export default async function graphQLFetch(query, variables = {}) {
+export default async function graphQLFetch(query, variables = {}, showError = null) {
     try {
         {/**As for the transformation, you could, within the ui directory, either run npm run compile or npm run watch. But the API calls will fail because the endpoint /graphql has no handlers in the UI server. So, instead of making API calls to the UI server, we need to change the UI to call the API server. */}
       const response = await fetch(window.ENV.UI_API_ENDPOINT, {
@@ -21,13 +21,13 @@ export default async function graphQLFetch(query, variables = {}) {
         const error = result.errors[0];
         if (error.extensions.code == 'BAD_USER_INPUT') {
           const details = error.extensions.exception.errors.join('\n ');
-          alert(`${error.message}:\n ${details}`);
-        } else {
-          alert(`${error.extensions.code}: ${error.message}`);
+          if (showError) showError(`${error.message}:\n ${details}`);
+        } else if (showError) {
+          showError(`${error.extensions.code}: ${error.message}`);
         }
       }
       return result.data;
     } catch (e) {
-      alert(`Error in sending data to server: ${e.message}`);
+      if (showError) showError(`Error in sending data to server: ${e.message}`);
     }
   }
