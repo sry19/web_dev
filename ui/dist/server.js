@@ -22,7 +22,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "2ff1cf78ea17439f7a87";
+/******/ 	var hotCurrentHash = "9037c489e28f97e9d476";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -818,6 +818,1051 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/encoding/lib sync recursive":
+/*!****************************************!*\
+  !*** ./node_modules/encoding/lib sync ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+function webpackEmptyContext(req) {
+	var e = new Error("Cannot find module '" + req + "'");
+	e.code = 'MODULE_NOT_FOUND';
+	throw e;
+}
+webpackEmptyContext.keys = function() { return []; };
+webpackEmptyContext.resolve = webpackEmptyContext;
+module.exports = webpackEmptyContext;
+webpackEmptyContext.id = "./node_modules/encoding/lib sync recursive";
+
+/***/ }),
+
+/***/ "./node_modules/encoding/lib/encoding.js":
+/*!***********************************************!*\
+  !*** ./node_modules/encoding/lib/encoding.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var iconvLite = __webpack_require__(/*! iconv-lite */ "iconv-lite"); // Load Iconv from an external file to be able to disable Iconv for webpack
+// Add /\/iconv-loader$/ to webpack.IgnorePlugin to ignore it
+
+
+var Iconv = __webpack_require__(/*! ./iconv-loader */ "./node_modules/encoding/lib/iconv-loader.js"); // Expose to the world
+
+
+module.exports.convert = convert;
+/**
+ * Convert encoding of an UTF-8 string or a buffer
+ *
+ * @param {String|Buffer} str String to be converted
+ * @param {String} to Encoding to be converted to
+ * @param {String} [from='UTF-8'] Encoding to be converted from
+ * @param {Boolean} useLite If set to ture, force to use iconvLite
+ * @return {Buffer} Encoded string
+ */
+
+function convert(str, to, from, useLite) {
+  from = checkEncoding(from || 'UTF-8');
+  to = checkEncoding(to || 'UTF-8');
+  str = str || '';
+  var result;
+
+  if (from !== 'UTF-8' && typeof str === 'string') {
+    str = new Buffer(str, 'binary');
+  }
+
+  if (from === to) {
+    if (typeof str === 'string') {
+      result = new Buffer(str);
+    } else {
+      result = str;
+    }
+  } else if (Iconv && !useLite) {
+    try {
+      result = convertIconv(str, to, from);
+    } catch (E) {
+      console.error(E);
+
+      try {
+        result = convertIconvLite(str, to, from);
+      } catch (E) {
+        console.error(E);
+        result = str;
+      }
+    }
+  } else {
+    try {
+      result = convertIconvLite(str, to, from);
+    } catch (E) {
+      console.error(E);
+      result = str;
+    }
+  }
+
+  if (typeof result === 'string') {
+    result = new Buffer(result, 'utf-8');
+  }
+
+  return result;
+}
+/**
+ * Convert encoding of a string with node-iconv (if available)
+ *
+ * @param {String|Buffer} str String to be converted
+ * @param {String} to Encoding to be converted to
+ * @param {String} [from='UTF-8'] Encoding to be converted from
+ * @return {Buffer} Encoded string
+ */
+
+
+function convertIconv(str, to, from) {
+  var response, iconv;
+  iconv = new Iconv(from, to + '//TRANSLIT//IGNORE');
+  response = iconv.convert(str);
+  return response.slice(0, response.length);
+}
+/**
+ * Convert encoding of astring with iconv-lite
+ *
+ * @param {String|Buffer} str String to be converted
+ * @param {String} to Encoding to be converted to
+ * @param {String} [from='UTF-8'] Encoding to be converted from
+ * @return {Buffer} Encoded string
+ */
+
+
+function convertIconvLite(str, to, from) {
+  if (to === 'UTF-8') {
+    return iconvLite.decode(str, from);
+  } else if (from === 'UTF-8') {
+    return iconvLite.encode(str, to);
+  } else {
+    return iconvLite.encode(iconvLite.decode(str, from), to);
+  }
+}
+/**
+ * Converts charset name if needed
+ *
+ * @param {String} name Character set
+ * @return {String} Character set name
+ */
+
+
+function checkEncoding(name) {
+  return (name || '').toString().trim().replace(/^latin[\-_]?(\d+)$/i, 'ISO-8859-$1').replace(/^win(?:dows)?[\-_]?(\d+)$/i, 'WINDOWS-$1').replace(/^utf[\-_]?(\d+)$/i, 'UTF-$1').replace(/^ks_c_5601\-1987$/i, 'CP949').replace(/^us[\-_]?ascii$/i, 'ASCII').toUpperCase();
+}
+
+/***/ }),
+
+/***/ "./node_modules/encoding/lib/iconv-loader.js":
+/*!***************************************************!*\
+  !*** ./node_modules/encoding/lib/iconv-loader.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var iconv_package;
+var Iconv;
+
+try {
+  // this is to fool browserify so it doesn't try (in vain) to install iconv.
+  iconv_package = 'iconv';
+  Iconv = __webpack_require__("./node_modules/encoding/lib sync recursive")(iconv_package).Iconv;
+} catch (E) {// node-iconv not present
+}
+
+module.exports = Iconv;
+
+/***/ }),
+
+/***/ "./node_modules/isomorphic-fetch/fetch-npm-node.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/isomorphic-fetch/fetch-npm-node.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var realFetch = __webpack_require__(/*! node-fetch */ "./node_modules/node-fetch/index.js");
+
+module.exports = function (url, options) {
+  if (/^\/\//.test(url)) {
+    url = 'https:' + url;
+  }
+
+  return realFetch.call(this, url, options);
+};
+
+if (!global.fetch) {
+  global.fetch = module.exports;
+  global.Response = realFetch.Response;
+  global.Headers = realFetch.Headers;
+  global.Request = realFetch.Request;
+}
+
+/***/ }),
+
+/***/ "./node_modules/node-fetch/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/node-fetch/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * index.js
+ *
+ * a request API compatible with window.fetch
+ */
+var parse_url = __webpack_require__(/*! url */ "url").parse;
+
+var resolve_url = __webpack_require__(/*! url */ "url").resolve;
+
+var http = __webpack_require__(/*! http */ "http");
+
+var https = __webpack_require__(/*! https */ "https");
+
+var zlib = __webpack_require__(/*! zlib */ "zlib");
+
+var stream = __webpack_require__(/*! stream */ "stream");
+
+var Body = __webpack_require__(/*! ./lib/body */ "./node_modules/node-fetch/lib/body.js");
+
+var Response = __webpack_require__(/*! ./lib/response */ "./node_modules/node-fetch/lib/response.js");
+
+var Headers = __webpack_require__(/*! ./lib/headers */ "./node_modules/node-fetch/lib/headers.js");
+
+var Request = __webpack_require__(/*! ./lib/request */ "./node_modules/node-fetch/lib/request.js");
+
+var FetchError = __webpack_require__(/*! ./lib/fetch-error */ "./node_modules/node-fetch/lib/fetch-error.js"); // commonjs
+
+
+module.exports = Fetch; // es6 default export compatibility
+
+module.exports.default = module.exports;
+/**
+ * Fetch class
+ *
+ * @param   Mixed    url   Absolute url or Request instance
+ * @param   Object   opts  Fetch options
+ * @return  Promise
+ */
+
+function Fetch(url, opts) {
+  // allow call as function
+  if (!(this instanceof Fetch)) return new Fetch(url, opts); // allow custom promise
+
+  if (!Fetch.Promise) {
+    throw new Error('native promise missing, set Fetch.Promise to your favorite alternative');
+  }
+
+  Body.Promise = Fetch.Promise;
+  var self = this; // wrap http.request into fetch
+
+  return new Fetch.Promise(function (resolve, reject) {
+    // build request object
+    var options = new Request(url, opts);
+
+    if (!options.protocol || !options.hostname) {
+      throw new Error('only absolute urls are supported');
+    }
+
+    if (options.protocol !== 'http:' && options.protocol !== 'https:') {
+      throw new Error('only http(s) protocols are supported');
+    }
+
+    var send;
+
+    if (options.protocol === 'https:') {
+      send = https.request;
+    } else {
+      send = http.request;
+    } // normalize headers
+
+
+    var headers = new Headers(options.headers);
+
+    if (options.compress) {
+      headers.set('accept-encoding', 'gzip,deflate');
+    }
+
+    if (!headers.has('user-agent')) {
+      headers.set('user-agent', 'node-fetch/1.0 (+https://github.com/bitinn/node-fetch)');
+    }
+
+    if (!headers.has('connection') && !options.agent) {
+      headers.set('connection', 'close');
+    }
+
+    if (!headers.has('accept')) {
+      headers.set('accept', '*/*');
+    } // detect form data input from form-data module, this hack avoid the need to pass multipart header manually
+
+
+    if (!headers.has('content-type') && options.body && typeof options.body.getBoundary === 'function') {
+      headers.set('content-type', 'multipart/form-data; boundary=' + options.body.getBoundary());
+    } // bring node-fetch closer to browser behavior by setting content-length automatically
+
+
+    if (!headers.has('content-length') && /post|put|patch|delete/i.test(options.method)) {
+      if (typeof options.body === 'string') {
+        headers.set('content-length', Buffer.byteLength(options.body)); // detect form data input from form-data module, this hack avoid the need to add content-length header manually
+      } else if (options.body && typeof options.body.getLengthSync === 'function') {
+        // for form-data 1.x
+        if (options.body._lengthRetrievers && options.body._lengthRetrievers.length == 0) {
+          headers.set('content-length', options.body.getLengthSync().toString()); // for form-data 2.x
+        } else if (options.body.hasKnownLength && options.body.hasKnownLength()) {
+          headers.set('content-length', options.body.getLengthSync().toString());
+        } // this is only necessary for older nodejs releases (before iojs merge)
+
+      } else if (options.body === undefined || options.body === null) {
+        headers.set('content-length', '0');
+      }
+    }
+
+    options.headers = headers.raw(); // http.request only support string as host header, this hack make custom host header possible
+
+    if (options.headers.host) {
+      options.headers.host = options.headers.host[0];
+    } // send request
+
+
+    var req = send(options);
+    var reqTimeout;
+
+    if (options.timeout) {
+      req.once('socket', function (socket) {
+        reqTimeout = setTimeout(function () {
+          req.abort();
+          reject(new FetchError('network timeout at: ' + options.url, 'request-timeout'));
+        }, options.timeout);
+      });
+    }
+
+    req.on('error', function (err) {
+      clearTimeout(reqTimeout);
+      reject(new FetchError('request to ' + options.url + ' failed, reason: ' + err.message, 'system', err));
+    });
+    req.on('response', function (res) {
+      clearTimeout(reqTimeout); // handle redirect
+
+      if (self.isRedirect(res.statusCode) && options.redirect !== 'manual') {
+        if (options.redirect === 'error') {
+          reject(new FetchError('redirect mode is set to error: ' + options.url, 'no-redirect'));
+          return;
+        }
+
+        if (options.counter >= options.follow) {
+          reject(new FetchError('maximum redirect reached at: ' + options.url, 'max-redirect'));
+          return;
+        }
+
+        if (!res.headers.location) {
+          reject(new FetchError('redirect location header missing at: ' + options.url, 'invalid-redirect'));
+          return;
+        } // per fetch spec, for POST request with 301/302 response, or any request with 303 response, use GET when following redirect
+
+
+        if (res.statusCode === 303 || (res.statusCode === 301 || res.statusCode === 302) && options.method === 'POST') {
+          options.method = 'GET';
+          delete options.body;
+          delete options.headers['content-length'];
+        }
+
+        options.counter++;
+        resolve(Fetch(resolve_url(options.url, res.headers.location), options));
+        return;
+      } // normalize location header for manual redirect mode
+
+
+      var headers = new Headers(res.headers);
+
+      if (options.redirect === 'manual' && headers.has('location')) {
+        headers.set('location', resolve_url(options.url, headers.get('location')));
+      } // prepare response
+
+
+      var body = res.pipe(new stream.PassThrough());
+      var response_options = {
+        url: options.url,
+        status: res.statusCode,
+        statusText: res.statusMessage,
+        headers: headers,
+        size: options.size,
+        timeout: options.timeout
+      }; // response object
+
+      var output; // in following scenarios we ignore compression support
+      // 1. compression support is disabled
+      // 2. HEAD request
+      // 3. no content-encoding header
+      // 4. no content response (204)
+      // 5. content not modified response (304)
+
+      if (!options.compress || options.method === 'HEAD' || !headers.has('content-encoding') || res.statusCode === 204 || res.statusCode === 304) {
+        output = new Response(body, response_options);
+        resolve(output);
+        return;
+      } // otherwise, check for gzip or deflate
+
+
+      var name = headers.get('content-encoding'); // for gzip
+
+      if (name == 'gzip' || name == 'x-gzip') {
+        body = body.pipe(zlib.createGunzip());
+        output = new Response(body, response_options);
+        resolve(output);
+        return; // for deflate
+      } else if (name == 'deflate' || name == 'x-deflate') {
+        // handle the infamous raw deflate response from old servers
+        // a hack for old IIS and Apache servers
+        var raw = res.pipe(new stream.PassThrough());
+        raw.once('data', function (chunk) {
+          // see http://stackoverflow.com/questions/37519828
+          if ((chunk[0] & 0x0F) === 0x08) {
+            body = body.pipe(zlib.createInflate());
+          } else {
+            body = body.pipe(zlib.createInflateRaw());
+          }
+
+          output = new Response(body, response_options);
+          resolve(output);
+        });
+        return;
+      } // otherwise, use response as-is
+
+
+      output = new Response(body, response_options);
+      resolve(output);
+      return;
+    }); // accept string, buffer or readable stream as body
+    // per spec we will call tostring on non-stream objects
+
+    if (typeof options.body === 'string') {
+      req.write(options.body);
+      req.end();
+    } else if (options.body instanceof Buffer) {
+      req.write(options.body);
+      req.end();
+    } else if (typeof options.body === 'object' && options.body.pipe) {
+      options.body.pipe(req);
+    } else if (typeof options.body === 'object') {
+      req.write(options.body.toString());
+      req.end();
+    } else {
+      req.end();
+    }
+  });
+}
+
+;
+/**
+ * Redirect code matching
+ *
+ * @param   Number   code  Status code
+ * @return  Boolean
+ */
+
+Fetch.prototype.isRedirect = function (code) {
+  return code === 301 || code === 302 || code === 303 || code === 307 || code === 308;
+}; // expose Promise
+
+
+Fetch.Promise = global.Promise;
+Fetch.Response = Response;
+Fetch.Headers = Headers;
+Fetch.Request = Request;
+
+/***/ }),
+
+/***/ "./node_modules/node-fetch/lib/body.js":
+/*!*********************************************!*\
+  !*** ./node_modules/node-fetch/lib/body.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * body.js
+ *
+ * Body interface provides common methods for Request and Response
+ */
+var convert = __webpack_require__(/*! encoding */ "./node_modules/encoding/lib/encoding.js").convert;
+
+var bodyStream = __webpack_require__(/*! is-stream */ "is-stream");
+
+var PassThrough = __webpack_require__(/*! stream */ "stream").PassThrough;
+
+var FetchError = __webpack_require__(/*! ./fetch-error */ "./node_modules/node-fetch/lib/fetch-error.js");
+
+module.exports = Body;
+/**
+ * Body class
+ *
+ * @param   Stream  body  Readable stream
+ * @param   Object  opts  Response options
+ * @return  Void
+ */
+
+function Body(body, opts) {
+  opts = opts || {};
+  this.body = body;
+  this.bodyUsed = false;
+  this.size = opts.size || 0;
+  this.timeout = opts.timeout || 0;
+  this._raw = [];
+  this._abort = false;
+}
+/**
+ * Decode response as json
+ *
+ * @return  Promise
+ */
+
+
+Body.prototype.json = function () {
+  var self = this;
+  return this._decode().then(function (buffer) {
+    try {
+      return JSON.parse(buffer.toString());
+    } catch (err) {
+      return Body.Promise.reject(new FetchError('invalid json response body at ' + self.url + ' reason: ' + err.message, 'invalid-json'));
+    }
+  });
+};
+/**
+ * Decode response as text
+ *
+ * @return  Promise
+ */
+
+
+Body.prototype.text = function () {
+  return this._decode().then(function (buffer) {
+    return buffer.toString();
+  });
+};
+/**
+ * Decode response as buffer (non-spec api)
+ *
+ * @return  Promise
+ */
+
+
+Body.prototype.buffer = function () {
+  return this._decode();
+};
+/**
+ * Decode buffers into utf-8 string
+ *
+ * @return  Promise
+ */
+
+
+Body.prototype._decode = function () {
+  var self = this;
+
+  if (this.bodyUsed) {
+    return Body.Promise.reject(new Error('body used already for: ' + this.url));
+  }
+
+  this.bodyUsed = true;
+  this._bytes = 0;
+  this._abort = false;
+  this._raw = [];
+  return new Body.Promise(function (resolve, reject) {
+    var resTimeout; // body is string
+
+    if (typeof self.body === 'string') {
+      self._bytes = self.body.length;
+      self._raw = [new Buffer(self.body)];
+      return resolve(self._convert());
+    } // body is buffer
+
+
+    if (self.body instanceof Buffer) {
+      self._bytes = self.body.length;
+      self._raw = [self.body];
+      return resolve(self._convert());
+    } // allow timeout on slow response body
+
+
+    if (self.timeout) {
+      resTimeout = setTimeout(function () {
+        self._abort = true;
+        reject(new FetchError('response timeout at ' + self.url + ' over limit: ' + self.timeout, 'body-timeout'));
+      }, self.timeout);
+    } // handle stream error, such as incorrect content-encoding
+
+
+    self.body.on('error', function (err) {
+      reject(new FetchError('invalid response body at: ' + self.url + ' reason: ' + err.message, 'system', err));
+    }); // body is stream
+
+    self.body.on('data', function (chunk) {
+      if (self._abort || chunk === null) {
+        return;
+      }
+
+      if (self.size && self._bytes + chunk.length > self.size) {
+        self._abort = true;
+        reject(new FetchError('content size at ' + self.url + ' over limit: ' + self.size, 'max-size'));
+        return;
+      }
+
+      self._bytes += chunk.length;
+
+      self._raw.push(chunk);
+    });
+    self.body.on('end', function () {
+      if (self._abort) {
+        return;
+      }
+
+      clearTimeout(resTimeout);
+      resolve(self._convert());
+    });
+  });
+};
+/**
+ * Detect buffer encoding and convert to target encoding
+ * ref: http://www.w3.org/TR/2011/WD-html5-20110113/parsing.html#determining-the-character-encoding
+ *
+ * @param   String  encoding  Target encoding
+ * @return  String
+ */
+
+
+Body.prototype._convert = function (encoding) {
+  encoding = encoding || 'utf-8';
+  var ct = this.headers.get('content-type');
+  var charset = 'utf-8';
+  var res, str; // header
+
+  if (ct) {
+    // skip encoding detection altogether if not html/xml/plain text
+    if (!/text\/html|text\/plain|\+xml|\/xml/i.test(ct)) {
+      return Buffer.concat(this._raw);
+    }
+
+    res = /charset=([^;]*)/i.exec(ct);
+  } // no charset in content type, peek at response body for at most 1024 bytes
+
+
+  if (!res && this._raw.length > 0) {
+    for (var i = 0; i < this._raw.length; i++) {
+      str += this._raw[i].toString();
+
+      if (str.length > 1024) {
+        break;
+      }
+    }
+
+    str = str.substr(0, 1024);
+  } // html5
+
+
+  if (!res && str) {
+    res = /<meta.+?charset=(['"])(.+?)\1/i.exec(str);
+  } // html4
+
+
+  if (!res && str) {
+    res = /<meta[\s]+?http-equiv=(['"])content-type\1[\s]+?content=(['"])(.+?)\2/i.exec(str);
+
+    if (res) {
+      res = /charset=(.*)/i.exec(res.pop());
+    }
+  } // xml
+
+
+  if (!res && str) {
+    res = /<\?xml.+?encoding=(['"])(.+?)\1/i.exec(str);
+  } // found charset
+
+
+  if (res) {
+    charset = res.pop(); // prevent decode issues when sites use incorrect encoding
+    // ref: https://hsivonen.fi/encoding-menu/
+
+    if (charset === 'gb2312' || charset === 'gbk') {
+      charset = 'gb18030';
+    }
+  } // turn raw buffers into a single utf-8 buffer
+
+
+  return convert(Buffer.concat(this._raw), encoding, charset);
+};
+/**
+ * Clone body given Res/Req instance
+ *
+ * @param   Mixed  instance  Response or Request instance
+ * @return  Mixed
+ */
+
+
+Body.prototype._clone = function (instance) {
+  var p1, p2;
+  var body = instance.body; // don't allow cloning a used body
+
+  if (instance.bodyUsed) {
+    throw new Error('cannot clone body after it is used');
+  } // check that body is a stream and not form-data object
+  // note: we can't clone the form-data object without having it as a dependency
+
+
+  if (bodyStream(body) && typeof body.getBoundary !== 'function') {
+    // tee instance body
+    p1 = new PassThrough();
+    p2 = new PassThrough();
+    body.pipe(p1);
+    body.pipe(p2); // set instance body to teed body and return the other teed body
+
+    instance.body = p1;
+    body = p2;
+  }
+
+  return body;
+}; // expose Promise
+
+
+Body.Promise = global.Promise;
+
+/***/ }),
+
+/***/ "./node_modules/node-fetch/lib/fetch-error.js":
+/*!****************************************************!*\
+  !*** ./node_modules/node-fetch/lib/fetch-error.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * fetch-error.js
+ *
+ * FetchError interface for operational errors
+ */
+module.exports = FetchError;
+/**
+ * Create FetchError instance
+ *
+ * @param   String      message      Error message for human
+ * @param   String      type         Error type for machine
+ * @param   String      systemError  For Node.js system error
+ * @return  FetchError
+ */
+
+function FetchError(message, type, systemError) {
+  this.name = this.constructor.name;
+  this.message = message;
+  this.type = type; // when err.type is `system`, err.code contains system error code
+
+  if (systemError) {
+    this.code = this.errno = systemError.code;
+  } // hide custom error implementation details from end-users
+
+
+  Error.captureStackTrace(this, this.constructor);
+}
+
+__webpack_require__(/*! util */ "util").inherits(FetchError, Error);
+
+/***/ }),
+
+/***/ "./node_modules/node-fetch/lib/headers.js":
+/*!************************************************!*\
+  !*** ./node_modules/node-fetch/lib/headers.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+/**
+ * headers.js
+ *
+ * Headers class offers convenient helpers
+ */
+module.exports = Headers;
+/**
+ * Headers class
+ *
+ * @param   Object  headers  Response headers
+ * @return  Void
+ */
+
+function Headers(headers) {
+  var self = this;
+  this._headers = {}; // Headers
+
+  if (headers instanceof Headers) {
+    headers = headers.raw();
+  } // plain object
+
+
+  for (var prop in headers) {
+    if (!headers.hasOwnProperty(prop)) {
+      continue;
+    }
+
+    if (typeof headers[prop] === 'string') {
+      this.set(prop, headers[prop]);
+    } else if (typeof headers[prop] === 'number' && !isNaN(headers[prop])) {
+      this.set(prop, headers[prop].toString());
+    } else if (Array.isArray(headers[prop])) {
+      headers[prop].forEach(function (item) {
+        self.append(prop, item.toString());
+      });
+    }
+  }
+}
+/**
+ * Return first header value given name
+ *
+ * @param   String  name  Header name
+ * @return  Mixed
+ */
+
+
+Headers.prototype.get = function (name) {
+  var list = this._headers[name.toLowerCase()];
+
+  return list ? list[0] : null;
+};
+/**
+ * Return all header values given name
+ *
+ * @param   String  name  Header name
+ * @return  Array
+ */
+
+
+Headers.prototype.getAll = function (name) {
+  if (!this.has(name)) {
+    return [];
+  }
+
+  return this._headers[name.toLowerCase()];
+};
+/**
+ * Iterate over all headers
+ *
+ * @param   Function  callback  Executed for each item with parameters (value, name, thisArg)
+ * @param   Boolean   thisArg   `this` context for callback function
+ * @return  Void
+ */
+
+
+Headers.prototype.forEach = function (callback, thisArg) {
+  Object.getOwnPropertyNames(this._headers).forEach(function (name) {
+    this._headers[name].forEach(function (value) {
+      callback.call(thisArg, value, name, this);
+    }, this);
+  }, this);
+};
+/**
+ * Overwrite header values given name
+ *
+ * @param   String  name   Header name
+ * @param   String  value  Header value
+ * @return  Void
+ */
+
+
+Headers.prototype.set = function (name, value) {
+  this._headers[name.toLowerCase()] = [value];
+};
+/**
+ * Append a value onto existing header
+ *
+ * @param   String  name   Header name
+ * @param   String  value  Header value
+ * @return  Void
+ */
+
+
+Headers.prototype.append = function (name, value) {
+  if (!this.has(name)) {
+    this.set(name, value);
+    return;
+  }
+
+  this._headers[name.toLowerCase()].push(value);
+};
+/**
+ * Check for header name existence
+ *
+ * @param   String   name  Header name
+ * @return  Boolean
+ */
+
+
+Headers.prototype.has = function (name) {
+  return this._headers.hasOwnProperty(name.toLowerCase());
+};
+/**
+ * Delete all header values given name
+ *
+ * @param   String  name  Header name
+ * @return  Void
+ */
+
+
+Headers.prototype['delete'] = function (name) {
+  delete this._headers[name.toLowerCase()];
+};
+/**
+ * Return raw headers (non-spec api)
+ *
+ * @return  Object
+ */
+
+
+Headers.prototype.raw = function () {
+  return this._headers;
+};
+
+/***/ }),
+
+/***/ "./node_modules/node-fetch/lib/request.js":
+/*!************************************************!*\
+  !*** ./node_modules/node-fetch/lib/request.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * request.js
+ *
+ * Request class contains server only options
+ */
+var parse_url = __webpack_require__(/*! url */ "url").parse;
+
+var Headers = __webpack_require__(/*! ./headers */ "./node_modules/node-fetch/lib/headers.js");
+
+var Body = __webpack_require__(/*! ./body */ "./node_modules/node-fetch/lib/body.js");
+
+module.exports = Request;
+/**
+ * Request class
+ *
+ * @param   Mixed   input  Url or Request instance
+ * @param   Object  init   Custom options
+ * @return  Void
+ */
+
+function Request(input, init) {
+  var url, url_parsed; // normalize input
+
+  if (!(input instanceof Request)) {
+    url = input;
+    url_parsed = parse_url(url);
+    input = {};
+  } else {
+    url = input.url;
+    url_parsed = parse_url(url);
+  } // normalize init
+
+
+  init = init || {}; // fetch spec options
+
+  this.method = init.method || input.method || 'GET';
+  this.redirect = init.redirect || input.redirect || 'follow';
+  this.headers = new Headers(init.headers || input.headers || {});
+  this.url = url; // server only options
+
+  this.follow = init.follow !== undefined ? init.follow : input.follow !== undefined ? input.follow : 20;
+  this.compress = init.compress !== undefined ? init.compress : input.compress !== undefined ? input.compress : true;
+  this.counter = init.counter || input.counter || 0;
+  this.agent = init.agent || input.agent;
+  Body.call(this, init.body || this._clone(input), {
+    timeout: init.timeout || input.timeout || 0,
+    size: init.size || input.size || 0
+  }); // server request options
+
+  this.protocol = url_parsed.protocol;
+  this.hostname = url_parsed.hostname;
+  this.port = url_parsed.port;
+  this.path = url_parsed.path;
+  this.auth = url_parsed.auth;
+}
+
+Request.prototype = Object.create(Body.prototype);
+/**
+ * Clone this request
+ *
+ * @return  Request
+ */
+
+Request.prototype.clone = function () {
+  return new Request(this);
+};
+
+/***/ }),
+
+/***/ "./node_modules/node-fetch/lib/response.js":
+/*!*************************************************!*\
+  !*** ./node_modules/node-fetch/lib/response.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * response.js
+ *
+ * Response class provides content decoding
+ */
+var http = __webpack_require__(/*! http */ "http");
+
+var Headers = __webpack_require__(/*! ./headers */ "./node_modules/node-fetch/lib/headers.js");
+
+var Body = __webpack_require__(/*! ./body */ "./node_modules/node-fetch/lib/body.js");
+
+module.exports = Response;
+/**
+ * Response class
+ *
+ * @param   Stream  body  Readable stream
+ * @param   Object  opts  Response options
+ * @return  Void
+ */
+
+function Response(body, opts) {
+  opts = opts || {};
+  this.url = opts.url;
+  this.status = opts.status || 200;
+  this.statusText = opts.statusText || http.STATUS_CODES[this.status];
+  this.headers = new Headers(opts.headers);
+  this.ok = this.status >= 200 && this.status < 300;
+  Body.call(this, body, opts);
+}
+
+Response.prototype = Object.create(Body.prototype);
+/**
+ * Clone this response
+ *
+ * @return  Response
+ */
+
+Response.prototype.clone = function () {
+  return new Response(this._clone(this), {
+    url: this.url,
+    status: this.status,
+    statusText: this.statusText,
+    headers: this.headers,
+    ok: this.ok
+  });
+};
+
+/***/ }),
+
 /***/ "./node_modules/webpack/hot/log-apply-result.js":
 /*!*****************************************!*\
   !*** (webpack)/hot/log-apply-result.js ***!
@@ -1020,12 +2065,18 @@ async function render(req, res) {
   }
 
   _src_store_js__WEBPACK_IMPORTED_MODULE_5__["default"].initialData = initialData;
+  const context = {};
   const element = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["StaticRouter"], {
     location: req.url,
-    context: {}
+    context: context
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_src_Page_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], null));
   const body = react_dom_server__WEBPACK_IMPORTED_MODULE_1___default.a.renderToString(element);
-  res.send(Object(_template_js__WEBPACK_IMPORTED_MODULE_4__["default"])(body, initialData));
+
+  if (context.url) {
+    res.redirect(301, context.url);
+  } else {
+    res.send(Object(_template_js__WEBPACK_IMPORTED_MODULE_4__["default"])(body, initialData));
+  }
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (render);
@@ -1395,7 +2446,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
 /* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
-/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
 
 
 
@@ -1406,16 +2457,11 @@ class IssueAddNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
   constructor(props) {
     super(props);
     this.state = {
-      showing: false,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'success'
+      showing: false
     };
     this.showModal = this.showModal.bind(this);
     this.hideModal = this.hideModal.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   showModal() {
@@ -1427,20 +2473,6 @@ class IssueAddNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
   hideModal() {
     this.setState({
       showing: false
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger'
-    });
-  }
-
-  dismissToast() {
-    this.setState({
-      toastVisible: false
     });
   }
 
@@ -1458,9 +2490,12 @@ class IssueAddNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
                 id
             }
         }`;
+    const {
+      showError
+    } = this.props;
     const data = await Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_3__["default"])(query, {
       issue
-    }, this.showError);
+    }, showError);
 
     if (data) {
       const {
@@ -1473,11 +2508,6 @@ class IssueAddNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
   render() {
     const {
       showing
-    } = this.state;
-    const {
-      toastVisible,
-      toastMessage,
-      toastType
     } = this.state;
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["NavItem"], {
       onClick: this.showModal
@@ -1509,16 +2539,12 @@ class IssueAddNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compo
     }, "Submit"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["Button"], {
       bsStyle: "link",
       onClick: this.hideModal
-    }, "Cancel")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_4__["default"], {
-      showing: toastVisible,
-      onDismiss: this.dismissToast,
-      bsStyle: toastType
-    }, toastMessage));
+    }, "Cancel")))));
   }
 
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["withRouter"])(IssueAddNavItem));
+/* harmony default export */ __webpack_exports__["default"] = (Object(_withToast_jsx__WEBPACK_IMPORTED_MODULE_4__["default"])(Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["withRouter"])(IssueAddNavItem)));
 
 /***/ }),
 
@@ -1534,20 +2560,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return IssueDetail; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _graphQLFetch_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./graphQLFetch.js */ "./src/graphQLFetch.js");
-/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
 
+function IssueDetail({
+  issue
+}) {
+  if (issue) {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Description"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("pre", null, issue.description));
+  }
 
+  return null;
+}
+/*
+import graphQLFetch from './graphQLFetch.js';
+import Toast from './Toast.jsx';
 
-class IssueDetail extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
+export default class IssueDetail extends React.Component {
   constructor() {
     super();
-    this.state = {
+    this.state = { 
       issue: {},
       toastVisible: false,
       toastMessage: '',
-      toastType: 'info'
-    };
+      toastType: 'info' };
     this.showError = this.showError.bind(this);
     this.dismissToast = this.dismissToast.bind(this);
   }
@@ -1557,21 +2591,8 @@ class IssueDetail extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      match: {
-        params: {
-          id: prevId
-        }
-      }
-    } = prevProps;
-    const {
-      match: {
-        params: {
-          id
-        }
-      }
-    } = this.props;
-
+    const { match: { params: { id: prevId } } } = prevProps;
+    const { match: { params: { id } } } = this.props;
     if (prevId !== id) {
       this.loadData();
     }
@@ -1579,65 +2600,45 @@ class IssueDetail extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component
 
   showError(message) {
     this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger'
+      toastVisible: true, toastMessage: message, toastType: 'danger',
     });
   }
 
   dismissToast() {
-    this.setState({
-      toastVisible: false
-    });
+    this.setState({ toastVisible: false });
   }
 
   async loadData() {
-    const {
-      match: {
-        params: {
-          id
-        }
-      }
-    } = this.props;
+    const { match: { params: { id } } } = this.props;
     const query = `query issue($id: Int!) {
       issue (id: $id) {
         id description
       }
     }`;
-    const data = await Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_1__["default"])(query, {
-      id: parseInt(id, 10)
-    }, this.showError);
 
+    const data = await graphQLFetch(query, { id: parseInt(id, 10) }, this.showError);
     if (data) {
-      this.setState({
-        issue: data.issue
-      });
+      this.setState({ issue: data.issue });
     } else {
-      this.setState({
-        issue: {}
-      });
+      this.setState({ issue: {} });
     }
   }
 
   render() {
-    const {
-      issue: {
-        description
-      }
-    } = this.state;
-    const {
-      toastVisible,
-      toastType,
-      toastMessage
-    } = this.state;
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Description"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("pre", null, description), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
-      showing: toastVisible,
-      onDismiss: this.dismissToast,
-      bsStyle: toastType
-    }, toastMessage));
+    const { issue: { description } } = this.state;
+    const { toastVisible, toastType, toastMessage } = this.state;
+    return (
+      <div>
+        <h3>Description</h3>
+        <pre>{description}</pre>
+        <Toast showing={toastVisible} onDismiss={this.dismissToast} bsStyle={toastType}>
+          {toastMessage}
+        </Toast>
+      </div>
+    );
   }
-
 }
+*/
 
 /***/ }),
 
@@ -1650,7 +2651,6 @@ class IssueDetail extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return IssueEdit; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "react-router-dom");
@@ -1663,8 +2663,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _NumInput_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./NumInput.jsx */ "./src/NumInput.jsx");
 /* harmony import */ var _DateInput_jsx__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./DateInput.jsx */ "./src/DateInput.jsx");
 /* harmony import */ var _TextInput_jsx__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./TextInput.jsx */ "./src/TextInput.jsx");
-/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
 /* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+
 
 
 
@@ -1701,17 +2702,11 @@ class IssueEdit extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
     this.state = {
       issue,
       invalidFields: {},
-      showingValidation: false,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'success'
+      showingValidation: false
     };
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.onValidityChange = this.onValidityChange.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
@@ -1762,6 +2757,10 @@ class IssueEdit extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
       issue,
       invalidFields
     } = this.state;
+    const {
+      showSuccess,
+      showError
+    } = this.props;
     if (Object.keys(invalidFields).length !== 0) return;
     const query = `mutation issueUpdate(
             $id: Int!
@@ -1789,7 +2788,7 @@ class IssueEdit extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
       this.setState({
         issue: data.issueUpdate
       });
-      this.showSuccess('Updated issue successfully');
+      showSuccess('Updated issue successfully');
     }
   }
 
@@ -1810,9 +2809,10 @@ class IssueEdit extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
 
   async loadData() {
     const {
-      match
+      match,
+      showError
     } = this.props;
-    const data = await IssueEdit.fetchData(match, null, this.showError);
+    const data = await IssueEdit.fetchData(match, null, showError);
     this.setState({
       issue: data ? data.issue : {},
       invalidFields: {}
@@ -1831,28 +2831,6 @@ class IssueEdit extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
     });
   }
 
-  showSuccess(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'success'
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger'
-    });
-  }
-
-  dismissToast() {
-    this.setState({
-      toastVisible: false
-    });
-  }
-
   render() {
     const {
       issue
@@ -1862,11 +2840,6 @@ class IssueEdit extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
       issue: {
         id
       }
-    } = this.state;
-    const {
-      toastVisible,
-      toastMessage,
-      toastType
     } = this.state;
     const {
       match: {
@@ -2021,14 +2994,14 @@ class IssueEdit extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
       to: `/edit/${id - 1}`
     }, "Prev"), ' | ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
       to: `/edit/${id + 1}`
-    }, "Next")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_8__["default"], {
-      showing: toastVisible,
-      onDismiss: this.dismissToast,
-      bsStyle: toastType
-    }, toastMessage));
+    }, "Next")));
   }
 
 }
+
+const IssueEditWithToast = Object(_withToast_jsx__WEBPACK_IMPORTED_MODULE_8__["default"])(IssueEdit);
+IssueEditWithToast.fetchData = IssueEdit.fetchData;
+/* harmony default export */ __webpack_exports__["default"] = (IssueEditWithToast);
 
 /***/ }),
 
@@ -2234,7 +3207,6 @@ class IssueFilter extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return IssueList; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./IssueFilter.jsx */ "./src/IssueFilter.jsx");
@@ -2244,11 +3216,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
 /* harmony import */ var url_search_params__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! url-search-params */ "url-search-params");
 /* harmony import */ var url_search_params__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(url_search_params__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-router-dom */ "react-router-dom");
-/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_router_dom__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
-/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react-bootstrap */ "react-bootstrap");
+/* harmony import */ var react_bootstrap__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _store_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./store.js */ "./src/store.js");
+/* harmony import */ var _withToast_jsx__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./withToast.jsx */ "./src/withToast.jsx");
 
 
 
@@ -2265,25 +3236,22 @@ __webpack_require__.r(__webpack_exports__);
 {
   /**you should be able to use double quotes in the title of a newly added issue without causing any errors. */
 }
+
 class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
   constructor() {
     super();
-    const issues = _store_js__WEBPACK_IMPORTED_MODULE_9__["default"].initialData ? _store_js__WEBPACK_IMPORTED_MODULE_9__["default"].initialData.issueList : null;
-    delete _store_js__WEBPACK_IMPORTED_MODULE_9__["default"].initialData;
+    const issues = _store_js__WEBPACK_IMPORTED_MODULE_8__["default"].initialData ? _store_js__WEBPACK_IMPORTED_MODULE_8__["default"].initialData.issueList : null;
+    const selectedIssue = _store_js__WEBPACK_IMPORTED_MODULE_8__["default"].initialData ? _store_js__WEBPACK_IMPORTED_MODULE_8__["default"].initialData.issue : null;
+    delete _store_js__WEBPACK_IMPORTED_MODULE_8__["default"].initialData;
     this.state = {
       issues,
-      toastVisible: false,
-      toastMessage: '',
-      toastType: 'info'
+      selectedIssue
     };
     {
       /**to make this always refer to IssueList, otherwise, this.state would be undefined */
     }
     this.closeIssue = this.closeIssue.bind(this);
     this.deleteIssue = this.deleteIssue.bind(this);
-    this.showSuccess = this.showSuccess.bind(this);
-    this.showError = this.showError.bind(this);
-    this.dismissToast = this.dismissToast.bind(this);
   }
 
   componentDidMount() {
@@ -2297,31 +3265,58 @@ class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
     const {
       location: {
         search: prevSearch
+      },
+      match: {
+        params: {
+          id: prevId
+        }
       }
     } = prevProps;
     const {
       location: {
         search
+      },
+      match: {
+        params: {
+          id
+        }
       }
     } = this.props;
 
-    if (prevSearch !== search) {
+    if (prevSearch !== search || prevId !== id) {
       this.loadData();
     }
   }
 
   static async fetchData(match, search, showError) {
     const params = new url_search_params__WEBPACK_IMPORTED_MODULE_6___default.a(search);
-    const vars = {};
+    const vars = {
+      hasSelection: false,
+      selectedId: 0
+    };
     if (params.get('status')) vars.status = params.get('status');
     const effortMin = parseInt(params.get('effortMin'), 10);
     if (!Number.isNaN(effortMin)) vars.effortMin = effortMin;
     const effortMax = parseInt(params.get('effortMax'), 10);
     if (!Number.isNaN(effortMax)) vars.effortMax = effortMax;
+    const {
+      params: {
+        id
+      }
+    } = match;
+    const idInt = parseInt(id, 10);
+
+    if (!Number.isNaN(idInt)) {
+      vars.hasSelection = true;
+      vars.selectedId = idInt;
+    }
+
     const query = `query issueList(
             $status: StatusType
             $effortMin: Int
             $effortMax: Int
+            $hasSelection: Boolean!
+            $selectedId: Int!
         ) {
           issueList (
               status: $status
@@ -2330,6 +3325,9 @@ class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
           ) {
             id title status owner
             created effort due
+          }
+          issue(id: $selectedId) @include (if : $hasSelection) {
+              id description
           }
         }`;
     const data = await Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_4__["default"])(query, vars, showError);
@@ -2346,9 +3344,12 @@ class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
     const {
       issues
     } = this.state;
+    const {
+      showError
+    } = this.props;
     const data = await Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_4__["default"])(query, {
       id: issues[index].id
-    }, this.showError);
+    }, showError);
 
     if (data) {
       this.setState(prevState => {
@@ -2380,9 +3381,13 @@ class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
     const {
       id
     } = issues[index];
+    const {
+      showSuccess,
+      showError
+    } = this.props;
     const data = await Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_4__["default"])(query, {
       id
-    }, this.showError);
+    }, showError);
 
     if (data && data.issueDelete) {
       this.setState(prevState => {
@@ -2400,45 +3405,26 @@ class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
           issues: newList
         };
       });
-      this.showSuccess(`Deleted issue ${id} successfully.`);
+      showSuccess(`Deleted issue ${id} successfully.`);
     } else {
       this.loadData();
     }
-  }
-
-  showSuccess(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'success'
-    });
-  }
-
-  showError(message) {
-    this.setState({
-      toastVisible: true,
-      toastMessage: message,
-      toastType: 'danger'
-    });
-  }
-
-  dismissToast() {
-    this.setState({
-      toastVisible: false
-    });
   }
 
   async loadData() {
     const {
       location: {
         search
-      }
+      },
+      match,
+      showError
     } = this.props;
-    const data = await IssueList.fetchData(null, search, this.showError);
+    const data = await IssueList.fetchData(match, search, showError);
 
     if (data) {
       this.setState({
-        issues: data.issueList
+        issues: data.issueList,
+        selectedIssue: data.issue
       });
     }
   }
@@ -2449,32 +3435,27 @@ class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
     } = this.state;
     if (issues == null) return null;
     const {
-      toastVisible,
-      toastType,
-      toastMessage
+      selectedIssue
     } = this.state;
-    const {
-      match
-    } = this.props;
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__["Panel"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__["Panel"].Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__["Panel"].Title, {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["Panel"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["Panel"].Heading, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["Panel"].Title, {
       toggle: true
-    }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_8__["Panel"].Body, {
+    }, "Filter")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["Panel"].Body, {
       collapsible: true
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_IssueFilter_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_IssueTable_jsx__WEBPACK_IMPORTED_MODULE_2__["default"], {
       issues: issues,
       closeIssue: this.closeIssue,
       deleteIssue: this.deleteIssue
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_7__["Route"], {
-      path: `${match.path}/:id`,
-      component: _IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_3__["default"]
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_5__["default"], {
-      showing: toastVisible,
-      onDismiss: this.dismissToast,
-      bsStyle: toastType
-    }, toastMessage));
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_IssueDetail_jsx__WEBPACK_IMPORTED_MODULE_3__["default"], {
+      issue: selectedIssue
+    }));
   }
 
 }
+
+const IssueListWithToast = Object(_withToast_jsx__WEBPACK_IMPORTED_MODULE_9__["default"])(IssueList);
+IssueListWithToast.fetchData = IssueList.fetchData; //copy the reference of the component’s static methods to the wrapped component too, to make it visible.
+
+/* harmony default export */ __webpack_exports__["default"] = (IssueListWithToast);
 
 /***/ }),
 
@@ -2896,7 +3877,7 @@ class Toast extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return graphQLFetch; });
-/* harmony import */ var isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! isomorphic-fetch */ "isomorphic-fetch");
+/* harmony import */ var isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! isomorphic-fetch */ "./node_modules/isomorphic-fetch/fetch-npm-node.js");
 /* harmony import */ var isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0__);
 
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
@@ -2908,8 +3889,8 @@ function jsonDateReviver(key, value) {
 }
 
 async function graphQLFetch(query, variables = {}, showError = null) {
-  const apiEndpoint =  false ? // eslint-disable-line no-undef
-  undefined : process.env.UI_SERVER_API_ENDPOINT;
+  const apiEndpoint = __isBrowser__ ? // eslint-disable-line no-undef
+  window.ENV.UI_API_ENDPOINT : process.env.UI_SERVER_API_ENDPOINT;
 
   try {
     {
@@ -2967,7 +3948,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const routes = [{
-  path: '/issues',
+  path: '/issues/:id?',
   component: _IssueList_jsx__WEBPACK_IMPORTED_MODULE_0__["default"]
 }, {
   path: '/edit/:id',
@@ -2997,6 +3978,81 @@ const routes = [{
 __webpack_require__.r(__webpack_exports__);
 const store = {};
 /* harmony default export */ __webpack_exports__["default"] = (store);
+
+/***/ }),
+
+/***/ "./src/withToast.jsx":
+/*!***************************!*\
+  !*** ./src/withToast.jsx ***!
+  \***************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return withToast; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Toast_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Toast.jsx */ "./src/Toast.jsx");
+function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
+
+
+
+function withToast(OriginalComponent) {
+  return class ToastWrapper extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        toastVisible: false,
+        toastMessage: "",
+        toastType: 'success'
+      };
+      this.showSuccess = this.showSuccess.bind(this);
+      this.showError = this.showError.bind(this);
+      this.dismissToast = this.dismissToast.bind(this);
+    }
+
+    showSuccess(message) {
+      this.setState({
+        toastVisible: true,
+        toastMessage: message,
+        toastType: 'success'
+      });
+    }
+
+    showError(message) {
+      this.setState({
+        toastVisible: true,
+        toastMessage: message,
+        toastType: 'danger'
+      });
+    }
+
+    dismissToast() {
+      this.setState({
+        toastVisible: false
+      });
+    }
+
+    render() {
+      const {
+        toastType,
+        toastVisible,
+        toastMessage
+      } = this.state;
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_0___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(OriginalComponent, _extends({
+        showError: this.showError,
+        showSuccess: this.showSuccess,
+        dismissToast: this.dismissToast
+      }, this.props)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Toast_jsx__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        bsStyle: toastType,
+        showing: toastVisible,
+        onDismiss: this.dismissToast
+      }, toastMessage));
+    }
+
+  };
+}
 
 /***/ }),
 
@@ -3126,6 +4182,17 @@ module.exports = require("express");
 
 /***/ }),
 
+/***/ "http":
+/*!***********************!*\
+  !*** external "http" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("http");
+
+/***/ }),
+
 /***/ "http-proxy-middleware":
 /*!****************************************!*\
   !*** external "http-proxy-middleware" ***!
@@ -3137,14 +4204,36 @@ module.exports = require("http-proxy-middleware");
 
 /***/ }),
 
-/***/ "isomorphic-fetch":
-/*!***********************************!*\
-  !*** external "isomorphic-fetch" ***!
-  \***********************************/
+/***/ "https":
+/*!************************!*\
+  !*** external "https" ***!
+  \************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = require("isomorphic-fetch");
+module.exports = require("https");
+
+/***/ }),
+
+/***/ "iconv-lite":
+/*!*****************************!*\
+  !*** external "iconv-lite" ***!
+  \*****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("iconv-lite");
+
+/***/ }),
+
+/***/ "is-stream":
+/*!****************************!*\
+  !*** external "is-stream" ***!
+  \****************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("is-stream");
 
 /***/ }),
 
@@ -3236,6 +4325,28 @@ module.exports = require("source-map-support");
 
 /***/ }),
 
+/***/ "stream":
+/*!*************************!*\
+  !*** external "stream" ***!
+  \*************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("stream");
+
+/***/ }),
+
+/***/ "url":
+/*!**********************!*\
+  !*** external "url" ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("url");
+
+/***/ }),
+
 /***/ "url-search-params":
 /*!************************************!*\
   !*** external "url-search-params" ***!
@@ -3244,6 +4355,17 @@ module.exports = require("source-map-support");
 /***/ (function(module, exports) {
 
 module.exports = require("url-search-params");
+
+/***/ }),
+
+/***/ "util":
+/*!***********************!*\
+  !*** external "util" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("util");
 
 /***/ }),
 
@@ -3288,6 +4410,17 @@ module.exports = require("webpack-hot-middleware");
 /***/ (function(module, exports) {
 
 module.exports = require("webpack-node-externals");
+
+/***/ }),
+
+/***/ "zlib":
+/*!***********************!*\
+  !*** external "zlib" ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("zlib");
 
 /***/ })
 

@@ -1,5 +1,18 @@
 import React from 'react';
 
+export default function IssueDetail({ issue }) {
+  if (issue) {
+    return (
+      <div>
+        <h3>Description</h3>
+        <pre>{issue.description}</pre>
+      </div>
+    );
+  }
+  return null;
+}
+
+/*
 import graphQLFetch from './graphQLFetch.js';
 import Toast from './Toast.jsx';
 
@@ -67,3 +80,4 @@ export default class IssueDetail extends React.Component {
     );
   }
 }
+*/
