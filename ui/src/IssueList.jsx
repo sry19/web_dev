@@ -9,6 +9,7 @@ import Toast from './Toast.jsx';
 import URLSearchParams from 'url-search-params';
 import { Route } from 'react-router-dom';
 import { Panel } from 'react-bootstrap';
+import store from './store.js';
 
 
 {/**parent */}
@@ -16,7 +17,9 @@ import { Panel } from 'react-bootstrap';
 export default class IssueList extends React.Component { 
     constructor() {
         super();
-        this.state = { issues: [],
+        const issues = store.initialData ? store.initialData.issueList : null;
+        delete store.initialData;
+        this.state = { issues,
                        toastVisible: false,
                        toastMessage: '',
                        toastType: 'info' };
@@ -29,7 +32,8 @@ export default class IssueList extends React.Component {
     }
 
     componentDidMount() {
-        this.loadData();
+        const { issues } = this.state;
+        if (issues == null) this.loadData();
     }
 
     componentDidUpdate(prevProps) {
@@ -40,8 +44,7 @@ export default class IssueList extends React.Component {
         }
     }
 
-    async loadData() {
-        const { location: { search } } = this.props;
+    static async fetchData(match, search, showError) {
         const params = new URLSearchParams(search);
         const vars = {};
         if (params.get('status')) vars.status = params.get('status');
@@ -66,10 +69,8 @@ export default class IssueList extends React.Component {
           }
         }`;
     
-        const data = await graphQLFetch(query,vars,this.showError);
-        if (data) {
-            this.setState({ issues: data.issueList });
-        }
+        const data = await graphQLFetch(query,vars,showError);
+        return data;
       }
 
     async closeIssue(index) {
@@ -131,8 +132,17 @@ export default class IssueList extends React.Component {
         this.setState({ toastVisible: false });
     }
 
+    async loadData() {
+        const { location: {search} } = this.props;
+        const data = await IssueList.fetchData(null, search, this.showError);
+        if (data) {
+            this.setState({ issues: data.issueList });
+        }
+    }
+
     render() {
         const { issues } = this.state;
+        if (issues == null) return null;
         const { toastVisible, toastType, toastMessage } = this.state;
         const { match } = this.props;
 
