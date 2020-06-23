@@ -1,14 +1,21 @@
-const express = require('express');// import the module and get the function that the module exports
-require('dotenv').config();
-const path = require('path');
-const proxy = require('http-proxy-middleware');
-const render = require('./render.js');
+import dotenv from 'dotenv';
+import path from 'path';
+import express from 'express';// import the module and get the function that the module exports
+import proxy from 'http-proxy-middleware';
+import SourceMapSupport from 'source-map-support';
 
-const apiProxyTarget = process.env.API_PROXY_TARGET;
-if (apiProxyTarget) {
-  app.use('/graphql', proxy({ target: apiProxyTarget }));
-}
+import render from './render.jsx';
+
 const app = express(); // instantiate an application
+
+SourceMapSupport.install();
+dotenv.config();
+
+//const apiProxyTarget = process.env.API_PROXY_TARGET;
+//if (apiProxyTarget) {
+  //app.use('/graphql', proxy({ target: apiProxyTarget }));
+//}
+
 
 const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
 
@@ -20,7 +27,7 @@ if (enableHMR && (process.env.NODE_ENV !== 'production')) {
   const devMiddleware = require('webpack-dev-middleware');
   const hotMiddleware = require('webpack-hot-middleware');
 
-  const config = require('../webpack.config.js');
+  const config = require('../webpack.config.js')[0];
   config.entry.app.push('webpack-hot-middleware/client');
   config.plugins = config.plugins || [];
   config.plugins.push(new webpack.HotModuleReplacementPlugin());

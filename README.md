@@ -51,3 +51,5 @@ const data = await graphQLFetch(query, { id: parseInt(id, 10) });
 mangod: mongo server // runnning in the background all the time
 mango: mongo client
 object in mongodb: document
+SPA: single page application
+react routing: react checks out what is in this window
