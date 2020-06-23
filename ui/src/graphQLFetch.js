@@ -1,3 +1,5 @@
+import fetch from 'isomorphic-fetch';
+
 const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
 
 function jsonDateReviver(key, value) {
@@ -7,9 +9,11 @@ function jsonDateReviver(key, value) {
 }
 
 export default async function graphQLFetch(query, variables = {}, showError = null) {
+    const apiEndpoint = (__isBrowser__) // eslint-disable-line no-undef
+     ? window.ENV.UI_API_ENDPOINT : process.env.UI_SERVER_API_ENDPOINT;
     try {
         {/**As for the transformation, you could, within the ui directory, either run npm run compile or npm run watch. But the API calls will fail because the endpoint /graphql has no handlers in the UI server. So, instead of making API calls to the UI server, we need to change the UI to call the API server. */}
-      const response = await fetch(window.ENV.UI_API_ENDPOINT, {
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({ query, variables })
