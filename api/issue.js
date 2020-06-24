@@ -10,7 +10,7 @@ async function get(_, { id }) {
   return issue;
 }
 
-async function list(_, { status, effortMin, effortMax, page, }) {
+async function list(_, { status, effortMin, effortMax, search, page, }) {
   const db = getDb();
   const filter = {};
   if (status) filter.status = status;
@@ -19,6 +19,7 @@ async function list(_, { status, effortMin, effortMax, page, }) {
     if (effortMin != undefined) filter.effort.$gte = effortMin;
     if (effortMax != undefined) filter.effort.$lte = effortMax;
   }
+  if (search) filter.$text = { $search: search };
   const cursor = db.collection('issues').find(filter).sort({ id: 1 }).skip(PAGE_SIZE * (page - 1)).limit(PAGE_SIZE);
   const totalCount = await cursor.count(false);
   const issues = cursor.toArray();
