@@ -22,7 +22,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "94d5de8ffaaa6d8caf25";
+/******/ 	var hotCurrentHash = "e6be2fe1f43eef47aa13";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -3446,8 +3446,30 @@ class IssueList extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
           issues: newList
         };
       });
-      showSuccess(`Deleted issue ${id} successfully.`);
+      const undoMessage = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null, `Deleted issue ${id} successfully.`, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_7__["Button"], {
+        bsStyle: "link",
+        onClick: () => this.restoreIssue(id)
+      }, "UNDO"));
+      showSuccess(undoMessage);
     } else {
+      this.loadData();
+    }
+  }
+
+  async restoreIssue(id) {
+    const query = `mutation issueRestore($id: Int!) {
+            issueRestore(id: $id)
+        }`;
+    const {
+      showSuccess,
+      showError
+    } = this.props;
+    const data = await Object(_graphQLFetch_js__WEBPACK_IMPORTED_MODULE_4__["default"])(query, {
+      id
+    }, showError);
+
+    if (data) {
+      showSuccess(`Issue ${id} restored successfully.`);
       this.loadData();
     }
   }
