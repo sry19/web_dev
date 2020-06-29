@@ -1,9 +1,14 @@
 require('dotenv').config(); //  help us run the same code on different environments using different configurations for each environment, such as development and production
 const express = require('express');// import the module and get the function that the module exports
+const cookieParser = require('cookie-parser');
 const { connectToDb } = require('./db.js');
 const { installHandler } = require('./api_handler.js');
+const auth = require('./auth.js');
 
 const app = express(); // instantiate an application
+
+app.use(cookieParser());
+app.use('/auth', auth.routes);
 
 installHandler(app);
 

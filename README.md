@@ -53,3 +53,9 @@ mango: mongo client
 object in mongodb: document
 SPA: single page application
 react routing: react checks out what is in this window
+
+
+Ch14:
+* Google login error: “popup_closed_by_user”
+Try clearing your browser cache.
+In Chrome: Settings → Advanced → Clear browsing data → Cached images and files

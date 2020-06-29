@@ -10,10 +10,11 @@ const app = express(); // instantiate an application
 SourceMapSupport.install();
 dotenv.config();
 
-//const apiProxyTarget = process.env.API_PROXY_TARGET;
-//if (apiProxyTarget) {
-  //app.use('/graphql', proxy({ target: apiProxyTarget }));
-//}
+const apiProxyTarget = process.env.API_PROXY_TARGET;
+if (apiProxyTarget) {
+  app.use('/graphql', proxy({ target: apiProxyTarget }));
+  app.use('/auth', proxy({ target: apiProxyTarget }));
+}
 
 
 const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
@@ -57,8 +58,20 @@ if (!process.env.UI_SERVER_API_ENDPOINT) {
   process.env.UI_API_ENDPOINT = process.env.UI_API_ENDPOINT;
 }
 
+if (!process.env.UI_AUTH_ENDPOINT) {
+  process.env.UI_AUTH_ENDPOINT = 'http://localhost:3000/auth';
+}
+
+// self-added
+if (!process.env.GOOGLE_CLIENT_ID) {
+  process.env.GOOGLE_CLIENT_ID = '902195467197-1nul9rqk9sofsnt0qsrre6dsn9k722fc.apps.googleusercontent.com';
+}
+
 app.get('/env.js', (req, res) => {
-  const env = { UI_API_ENDPOINT: process.env.UI_API_ENDPOINT };
+  const env = { UI_API_ENDPOINT: process.env.UI_API_ENDPOINT,
+                GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+                UI_AUTH_ENDPOINT: process.env.UI_AUTH_ENDPOINT, };
+  console.log(env);
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
 
