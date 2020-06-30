@@ -53,7 +53,12 @@ mango: mongo client
 object in mongodb: document
 SPA: single page application
 react routing: react checks out what is in this window
-
+promise: object
+call-back function: when object populated(get a promise), call that function
+collection.find({}): fetch the whole collection
+.then(): only be accessed when the previous step finished(get a promise)
+ajax: create a  new request
+jsx: gets translated to js on the server side and pass to the browser
 
 Ch14:
 * Google login error: “popup_closed_by_user”

@@ -17,9 +17,10 @@ const { MongoClient } = require('mongodb');
  * and it is best to specify it this way, even though a cloud provider may not show this explicitly.
  */
 
-const url = process.env.DB_URL || 'mongodb://localhost/issuetracker';
+// const url = process.env.DB_URL || 'mongodb://localhost/issuetracker';
 // Atlas URL - replace UUU with user, PPP with password, XXX with hostname
-// const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
+//const url = 'mongodb+srv://UUU:PPP@cluster0-XXX.mongodb.net/issuetracker?retryWrites=true';
+const url = 'mongodb+srv://new_user:19961116@cluster0-tkogw.mongodb.net/issuetracker';
 // mLab URL - replace UUU with user, PPP with password, XXX with hostname
 // const url = 'mongodb://UUU:PPP@XXX.mlab.com:33533/issuetracker';
 
