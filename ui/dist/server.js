@@ -22,7 +22,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "598a080c160531f3ede7";
+/******/ 	var hotCurrentHash = "90a76323bf0aac3a5358";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -2978,7 +2978,8 @@ class Page extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Component {
   async componentDidMount() {
     const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
     const response = await fetch(`${apiEndpoint}/user`, {
-      method: 'POST'
+      method: 'POST',
+      credentials: 'include'
     });
     const body = await response.text();
     const result = JSON.parse(body);
@@ -3181,6 +3182,7 @@ class SigninNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compone
       const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
       const response = await fetch(`${apiEndpoint}/signin`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -3214,7 +3216,8 @@ class SigninNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compone
 
     try {
       await fetch(`${apiEndpoint}/signout`, {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include'
       });
       const auth2 = window.gapi.auth2.getAuthInstance();
       await auth2.signOut();
@@ -3475,6 +3478,7 @@ async function graphQLFetch(query, variables = {}, showError = null) {
     }
     const response = await isomorphic_fetch__WEBPACK_IMPORTED_MODULE_0___default()(apiEndpoint, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json'
       },

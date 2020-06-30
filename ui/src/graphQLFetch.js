@@ -15,6 +15,7 @@ export default async function graphQLFetch(query, variables = {}, showError = nu
         {/**As for the transformation, you could, within the ui directory, either run npm run compile or npm run watch. But the API calls will fail because the endpoint /graphql has no handlers in the UI server. So, instead of making API calls to the UI server, we need to change the UI to call the API server. */}
       const response = await fetch(apiEndpoint, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({ query, variables })
       });
