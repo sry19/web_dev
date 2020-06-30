@@ -1,9 +1,7 @@
 # web_dev
-
 * React life cycle: https://flaviocopes.com/react-lifecycle-events/#:~:text=React%20class%20components%20can%20have,hook%20and%20provide%20custom%20functionality.
 
 Ch5:
-
 summary
 * What is GraphQL: https://www.zhihu.com/question/264629587
 * What is GraphQL: https://juejin.im/post/5c87b1776fb9a049ac7a0247
@@ -14,34 +12,31 @@ issues and errors:
 * The function shown as validateIssue(_, { issue }) on the bottom of page 123 and on page 125 is incorrectly named and has the wrong parameters. It should be issueValidate(issue) as called at the top of page 126.
 
 Ch7:
-
 issues and errors:
-* gyp: No Xcode or CLT version detected. 
- solution: Reinstall command-line tools by removing the previously installed version
- https://medium.com/flawless-app-stories/gyp-no-xcode-or-clt-version-detected-macos-catalina-anansewaa-38b536389e8d
- step1: First, get the location of the installed command-line tools by running the command below:
-    xcode-select --print-path
-    the result of the above command /Library/Developer/CommandLineTools
+* gyp: No Xcode or CLT version detected.
+solution: Reinstall command-line tools by removing the previously installed version
+https://medium.com/flawless-app-stories/gyp-no-xcode-or-clt-version-detected-macos-catalina-anansewaa-38b536389e8d
+step1: First, get the location of the installed command-line tools by running the command below:
+  xcode-select --print-path
+  the result of the above command /Library/Developer/CommandLineTools
 step2: Knowing the path to the currently installed command-line tools from the previous step,   You can now go ahead and remove it from the system. For the next set of commands, you need sudo privileges to run successfully.
-    sudo rm -r -f /Library/Developer/CommandLineTools
+  sudo rm -r -f /Library/Developer/CommandLineTools
 step3: Click on install and follow the rest of the instructions in prompt to reinstall command  line developer tools. If for some reasons, you do not get the prompt right after uninstalling your previous command line developer tools, no need to panic. Run the following command to get the prompt.
-    xcode-select --install
+  xcode-select --install
 * Error: Cannot find module 'graphql/validation/rules/PossibleTypeExtensions'
-    This issue is related to the version of graphql, so I uninstalled graphql and reinstalled the lastest version.
+  This issue is related to the version of graphql, so I uninstalled graphql and reinstalled the lastest version.
 
 issues have not solved:
 * (Multiple Environments) cannot use the environment variable to change the port number
 
 Ch8:
-
 summary:
 * What is webpack: https://www.jianshu.com/p/42e11515c10f
 
 Ch9:
-
 summary:
 * What is route and router: https://blog.csdn.net/jigetage/article/details/80938700
-* routing: direct to 
+* routing: direct to
 
 issues and errors:
 * If I implement the 'select' button, I find that there is an error : INTERNAL_SERVER_ERROR: Variable "$id" got invalid value "2"; Int cannot represent non-integer value: "2".
@@ -64,3 +59,12 @@ Ch14:
 * Google login error: “popup_closed_by_user”
 Try clearing your browser cache.
 In Chrome: Settings → Advanced → Clear browsing data → Cached images and files
+ 
+* How do I setup the dotenv file in Node.js?I defined the ENVIRONMENT_VARIABLES in my .env file but as soon as I try to output the value in my console, I get the error that it is undefined.
+ 
+So here is the troubleshooting list:
+The filename should be .env (I believe .env.test is also acceptable).
+Make sure you are requiring it as early as possible in your application using this statement require('dotenv').config();
+The .env file should be in the root directory of your project.
+Follow the "file writing rules" like DB_HOST=localhost, no need to wrap values in double/single quotes.
+
