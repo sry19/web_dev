@@ -8,6 +8,7 @@ const { ApolloServer } = require('apollo-server-express');
 const GraphQLDate = require('./graphql_date.js');
 const about = require('./about.js');
 const issue = require('./issue.js');
+const auth = require('./auth.js');
 
 // About API
 // List API
@@ -28,12 +29,18 @@ const resolvers = {
     GraphQLDate,
   };
 
+function getContext({ req }) {
+    const user = auth.getUser(req);
+    return { user };
+  }
+
   /*
   use the string that 'readFileSync' returned as the value for the property 'typeDefs' when creating the Apollo Server
   */
 const server = new ApolloServer({
     typeDefs: fs.readFileSync('schema.graphql', 'utf-8'),
     resolvers,
+    context: getContext,
     formatError: (error) => {
       console.log(error);
       return error;

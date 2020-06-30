@@ -22,7 +22,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "298d3fff6bc655ce93a3";
+/******/ 	var hotCurrentHash = "46a9dc82a26f2c75d3ad";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1121,17 +1121,6 @@ const app = express__WEBPACK_IMPORTED_MODULE_1___default()(); // instantiate an 
 
 source_map_support__WEBPACK_IMPORTED_MODULE_3___default.a.install();
 dotenv__WEBPACK_IMPORTED_MODULE_0___default.a.config();
-const apiProxyTarget = process.env.API_PROXY_TARGET;
-
-if (apiProxyTarget) {
-  app.use('/graphql', http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default()({
-    target: apiProxyTarget
-  }));
-  app.use('/auth', http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default()({
-    target: apiProxyTarget
-  }));
-}
-
 const enableHMR = (process.env.ENABLE_HMR || 'true') === 'true';
 
 if (enableHMR && "development" !== 'production') {
@@ -1171,22 +1160,32 @@ the app.use() method would have to be called with two arguments, the first one b
 app.use('/public', express.static('public'));
 */
 
+const apiProxyTarget = process.env.API_PROXY_TARGET;
+
+if (apiProxyTarget) {
+  app.use('/graphql', http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default()({
+    target: apiProxyTarget
+  }));
+  app.use('/auth', http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default()({
+    target: apiProxyTarget
+  }));
+}
+
 if (!process.env.UI_API_ENDPOINT) {
   process.env.UI_API_ENDPOINT = 'http://localhost:3000/graphql';
 }
 
 if (!process.env.UI_SERVER_API_ENDPOINT) {
-  process.env.UI_API_ENDPOINT = process.env.UI_API_ENDPOINT;
+  process.env.UI_SERVER_API_ENDPOINT = process.env.UI_API_ENDPOINT;
 }
 
 if (!process.env.UI_AUTH_ENDPOINT) {
   process.env.UI_AUTH_ENDPOINT = 'http://localhost:3000/auth';
 } // self-added
+// if (!process.env.GOOGLE_CLIENT_ID) {
+// process.env.GOOGLE_CLIENT_ID = '902195467197-1nul9rqk9sofsnt0qsrre6dsn9k722fc.apps.googleusercontent.com';
+// }
 
-
-if (!process.env.GOOGLE_CLIENT_ID) {
-  process.env.GOOGLE_CLIENT_ID = '902195467197-1nul9rqk9sofsnt0qsrre6dsn9k722fc.apps.googleusercontent.com';
-}
 
 app.get('/env.js', (req, res) => {
   const env = {
@@ -1194,7 +1193,6 @@ app.get('/env.js', (req, res) => {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     UI_AUTH_ENDPOINT: process.env.UI_AUTH_ENDPOINT
   };
-  console.log(env);
   res.send(`window.ENV = ${JSON.stringify(env)}`);
 });
 app.get('*', (req, res, next) => {
@@ -3051,6 +3049,42 @@ class SigninNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compone
     this.signIn = this.signIn.bind(this);
   }
 
+  async componentDidMount() {
+    const clientId = window.ENV.GOOGLE_CLIENT_ID;
+    if (!clientId) return;
+    window.gapi.load('auth2', () => {
+      if (!window.gapi.auth2.getAuthInstance()) {
+        window.gapi.auth2.init({
+          client_id: clientId
+        }).then(() => {
+          this.setState({
+            disabled: false
+          });
+        });
+      }
+    });
+    await this.loadData();
+  }
+
+  async loadData() {
+    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
+    const response = await fetch(`${apiEndpoint}/user`, {
+      method: 'POST'
+    });
+    const body = await response.text();
+    const result = JSON.parse(body);
+    const {
+      signedIn,
+      givenName
+    } = result;
+    this.setState({
+      user: {
+        signedIn,
+        givenName
+      }
+    });
+  }
+
   async signIn() {
     this.hideModal();
     const {
@@ -3139,44 +3173,6 @@ class SigninNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compone
     });
   }
 
-  async componentDidMount() {
-    const clientId = window.ENV.GOOGLE_CLIENT_ID;
-    console.log(clientId);
-    if (!clientId) return;
-    window.gapi.load('auth2', () => {
-      if (!window.gapi.auth2.getAuthInstance()) {
-        window.gapi.auth2.init({
-          client_id: clientId
-        }).then(() => {
-          this.setState({
-            disabled: false
-          });
-        });
-      }
-    });
-    await this.loadData();
-  } // In this function, we’ll make a call to the /auth/user API, retrieve the user information, and set the state. Note that we have to use the fetch() API rather than a GraphQL API, since there is no GraphQL API for getting the current user information yet. 
-
-
-  async loadData() {
-    const apiEndpoint = window.ENV.UI_AUTH_ENDPOINT;
-    const response = await fetch(`${apiEndpoint}/user`, {
-      method: 'POST'
-    });
-    const body = await response.text();
-    const result = JSON.parser(body);
-    const {
-      signedIn,
-      givenName
-    } = result;
-    this.setState({
-      user: {
-        signedIn,
-        givenName
-      }
-    });
-  }
-
   render() {
     const {
       user
@@ -3206,7 +3202,7 @@ class SigninNavItem extends react__WEBPACK_IMPORTED_MODULE_0___default.a.Compone
       closeButton: true
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Modal"].Title, null, "Sign in")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Modal"].Body, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Button"], {
       block: true,
-      disabled: false,
+      disabled: disabled,
       bsStyle: "primary",
       onClick: this.signIn
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
