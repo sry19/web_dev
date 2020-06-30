@@ -24,6 +24,6 @@ export default class Toast extends React.Component {
                     </Alert>
                 </div>
             </Collapse>
-        )
+        );
     }
 }

@@ -1,6 +1,7 @@
 // GraphQL
 const { UserInputError } = require('apollo-server-express');
 const { getDb, getNextSequence } = require('./db.js');
+const { mustBeSignedIn } = require('./auth.js');
 
 const PAGE_SIZE = 10;
 
@@ -126,4 +127,5 @@ async function counts(_, { status, effortMin, effortMax }) {
   return Object.values(stats);
 }
 
-module.exports = { list, add, get, update, delete:remove, counts, restore };
+module.exports = { list, add: mustBeSignedIn(add), get, update: mustBeSignedIn(update),
+   delete: mustBeSignedIn(remove), counts, restore: mustBeSignedIn(restore) };
