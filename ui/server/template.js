@@ -1,6 +1,6 @@
 import serialize from 'serialize-javascript';
 
-export default function template(body, data) {
+export default function template(body, initialData, userData) {
     return `<!DOCTYPE HTML>
     <html>
     
@@ -27,8 +27,11 @@ export default function template(body, data) {
         <!-- Page generated from template. -->
         <!--a division or a section in an HTML document. The <div> element is often used as a container for other HTML elements to style them with CSS or to perform certain tasks with JavaScript.-->
         <div id="contents">${body}</div>
-        <script>window.__INITIAL_DATA__ = ${serialize(data)}</script>
-    
+        <script>
+            window.__INITIAL_DATA__ = ${serialize(initialData)}
+            window.__USER_DATA__ = ${serialize(userData)}
+        </script>
+
         <!--tells babel to transform this script-->
         <!--in order to transform JSX to plain js, we need to install core Babel library and a command-line interface-->
         <script src="/env.js"></script>

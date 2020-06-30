@@ -8,15 +8,17 @@ function jsonDateReviver(key, value) {
     return value;
 }
 
-export default async function graphQLFetch(query, variables = {}, showError = null) {
+export default async function graphQLFetch(query, variables = {}, showError = null, cookie = null) {
     const apiEndpoint = (__isBrowser__) // eslint-disable-line no-undef
      ? window.ENV.UI_API_ENDPOINT : process.env.UI_SERVER_API_ENDPOINT;
     try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (cookie) headers.Cookie = cookie;
         {/**As for the transformation, you could, within the ui directory, either run npm run compile or npm run watch. But the API calls will fail because the endpoint /graphql has no handlers in the UI server. So, instead of making API calls to the UI server, we need to change the UI to call the API server. */}
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json'},
+        headers,
         body: JSON.stringify({ query, variables })
       });
       const body = await response.text();
