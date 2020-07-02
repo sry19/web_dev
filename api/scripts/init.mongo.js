@@ -56,6 +56,7 @@ print('Inserted', count, 'issues');
 db.counters.remove({ _id: 'issues' });
 db.counters.insert({ _id: 'issues', current: count });
 
+//  the expected values are 1 or -1, corresponding to ascending or descending order
 db.issues.createIndex({ id: 1 }, { unique: true });
 db.deleted_issues.createIndex({ id: 1 },{ unique: true })
 db.issues.createIndex({ status: 1 });

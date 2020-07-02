@@ -63,8 +63,14 @@ In Chrome: Settings → Advanced → Clear browsing data → Cached images and f
 * How do I setup the dotenv file in Node.js?I defined the ENVIRONMENT_VARIABLES in my .env file but as soon as I try to output the value in my console, I get the error that it is undefined.
  
 So here is the troubleshooting list:
-The filename should be .env (I believe .env.test is also acceptable).
+(1)The filename should be .env (I believe .env.test is also acceptable).
 Make sure you are requiring it as early as possible in your application using this statement require('dotenv').config();
 The .env file should be in the root directory of your project.
 Follow the "file writing rules" like DB_HOST=localhost, no need to wrap values in double/single quotes.
 
+(2)If you actually want to use it to supply the environment values, rename it to just .env (that's dot then env).
+Environment variables can also be provided as actual operating system environment variables. The environment being "prod" or "dev" would correspond too a different environment. For example, we can set OS environment variables for the Heroku deployment, so that Heroku deployed applications use connections associated with the production environment.
+.env files are also a good place to put variables that shouldn't be kept in version control. It's very common too include .env in your .gitignore list, so that sensitive values aren't shared in version control.
+
+* webpack
+the issuetracker app is running on port 8000. But the API (the service that provides data to the app) is running on 3000. So yes, you've got two servers running, and at least for Chapter 7 "run watch" is a separate command. In Chapter 8 Webpack gets introduced and things get rearranged a bit. You'll still be running UI and API from separate terminals. These have been separated into two independent, loosely coupled components of your application.
