@@ -81,3 +81,11 @@ use 'sudo nano /etc/hosts' to edit the file, I added
 
 '# cookie domain for issue tracker project
 127.0.0.1 api.promernstack.com ui.promernstack.com'
+
+
+* mongodb atlas:
+1. build your first cluster(issuetracker)
+2. create your first database user -> database access
+3. whitelist your ip address -> network access
+4. load sample data(optional)
+5. connect to your cluster
