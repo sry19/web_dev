@@ -1,4 +1,6 @@
 # web_dev
+Please 'npm install' && 'create .env' before run the app.
+--------------------------------------
 * React life cycle: https://flaviocopes.com/react-lifecycle-events/#:~:text=React%20class%20components%20can%20have,hook%20and%20provide%20custom%20functionality.
 
 Ch5:
