@@ -105,3 +105,25 @@ If it's undefined, then the default will be 'true' (and thus true) thanks to tha
 
 # 加域名：
  https://console.developers.google.com/apis/credentials
+---------------------------------------------------------------------------
+
+# 项目使用技术：
+ 1. Webpack: 模块打包机(module bundler)，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式<b>供浏览器使用</b>。能打包更多不同类型的文件。public文件夹用来存放之后供浏览器读取的文件，包括使用webpack打包生成的js文件。配置文件，webpack.config.js，目前的配置主要涉及到的内容是入口文件路径(entry)和打包后文件的存放路径(output)。
+
+ * <b>Why webpack</b>: To understand why you should use webpack, let's recap how we used JavaScript on the web before bundlers were a thing.There are two ways to run JavaScript in a browser. First, include a script for each functionality; this solution is hard to scale because <b>loading too many scripts can cause a network bottleneck</b>. The second option is to use a big .js file containing all your project code, but this leads to problems in scope, size, <b>readability and maintainability</b>.
+
+* At its core, webpack is a static module bundler for modern JavaScript applications. When webpack processes your application, it internally builds a dependency graph which <b>maps every module your project needs and generates one or more bundles</b>.Since version 4.0.0, webpack does not require a configuration file to bundle your project. Nevertheless, it is incredibly configurable to better fit your needs.
+
+* <b>Entry</b>: An entry point indicates which module webpack should use to begin building out its internal dependency graph. webpack will figure out which other modules and libraries that entry point depends on (directly and indirectly).
+
+* <b>Output</b>: The output property tells webpack where to emit the bundles it creates and how to name these files. It defaults to ./dist/main.js for the main output file and to the ./dist folder for any other generated file.
+
+*<b>Loaders</b>: Out of the box, webpack only understands JavaScript and JSON files. Loaders allow webpack to <b>process other types of files and convert</b> them into valid modules that can be consumed by your application and added to the dependency graph.At a high level, loaders have two properties in your webpack configuration:
+The <b>test</b> property identifies which <b>file</b> or files should be transformed.
+The <b>use property</b> indicates which <b>loader</b> should be used to do the transforming.
+
+*<b>Mode</b>: By setting the mode parameter to either development, production or none, you can enable webpack's built-in optimizations that correspond to each environment. The default value is <b>production</b>.
+
+*<b>Plugins</b>: While loaders are used to transform certain types of modules, plugins can be leveraged to <b>perform a wider range of tasks</b> like bundle optimization, asset management and injection of environment variables.
+
+*<b>Browser Compatibility</b>: webpack supports all browsers that are ES5-compliant (IE8 and below are not supported). webpack needs Promise for import() and require.ensure(). If you want to support older browsers, you will need to load a polyfill before using these expressions.
