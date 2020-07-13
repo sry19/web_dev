@@ -89,3 +89,13 @@ use 'sudo nano /etc/hosts' to edit the file, I added
 3. whitelist your ip address -> network access
 4. load sample data(optional)
 5. connect to your cluster
+
+* dotenv
+Right, JavaScript handles  Booleans, but your environment variables are not JavaScript variables. They're supplied by dotenv or by your operating system (which also has environment variables that can be set). You can think of this something like a command line argument. When you pass an argument to a Node (or Python, or whatever) script, it enters as a string, because that's what the OS passes to your program. It needs to be parsed from there.
+Here's a little tutorial on dotenv, halfway down you'll see some parsing rules:
+
+http://zetcode.com/javascript/dotenv/
+
+Also, it's worth emphasizing that process.env doesn't just get values from a .env file via dotenv (which is a JS library). It will also get an environment variable from your OS if you've got one set. Google "environment variables" for your own operating system to see how these can be set.
+And the JS type casting comes up here in that *if* there's no such environment variable defined *either* in a .env file *or* in an OS environment variable, then process.env.ENABLE_CORS will appear to JavaScript as undefined, which is falsy. If it has any other value (including 'false') then process.env.ENABLE_CORS will be defined (truthy) and the value will be compared to the string 'true'. If it's the same, we get a true boolean, if it's different (i.e. if it's the string 'false') then we get a false boolean.
+If it's undefined, then the default will be 'true' (and thus true) thanks to that logical or operator.

@@ -22,7 +22,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "7944a76c4e1ee0821e3e";
+/******/ 	var hotCurrentHash = "6abba66e71d1e6f15072";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -1169,10 +1169,12 @@ const apiProxyTarget = process.env.API_PROXY_TARGET;
 
 if (apiProxyTarget) {
   app.use('/graphql', http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default()({
-    target: apiProxyTarget
+    target: apiProxyTarget,
+    changeOrigin: true
   }));
   app.use('/auth', http_proxy_middleware__WEBPACK_IMPORTED_MODULE_2___default()({
-    target: apiProxyTarget
+    target: apiProxyTarget,
+    changeOrigin: true
   }));
 }
 
