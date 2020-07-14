@@ -102,13 +102,45 @@ Also, it's worth emphasizing that process.env doesn't just get values from a .en
 And the JS type casting comes up here in that *if* there's no such environment variable defined *either* in a .env file *or* in an OS environment variable, then process.env.ENABLE_CORS will appear to JavaScript as undefined, which is falsy. If it has any other value (including 'false') then process.env.ENABLE_CORS will be defined (truthy) and the value will be compared to the string 'true'. If it's the same, we get a true boolean, if it's different (i.e. if it's the string 'false') then we get a false boolean.
 If it's undefined, then the default will be 'true' (and thus true) thanks to that logical or operator.
 
+Ch15:
 
-# 加域名：
+issues and errors:
+* On page 519, the book has you set the COOKIE_DOMAIN environment variable as herokuapp.com. Most browsers will not accept cookies from this domain. The result is that your deployed application will not maintain session information and authentication will be lost on a page refresh or change. Since we will not be registering custom domains for our apps, we'll run the apps in proxy mode. To do this, set the COOKIE_DOMAIN environment variable for your API Heroku app to the domain of your UI app. In my case, that means running (in the API app directory):
+  heroku config:set COOKIE_DOMAIN=tracker-ui-sry19.herokuapp.com
+
+* In order to sign out correctly, the domain should be included in the clearCookie response from the server. This is located in the API app's auth.js file under the /signout route definition. Change
+  res.clearCookie('jwt')
+to
+    res.clearCookie('jwt', {
+        domain: process.env.COOKIE_DOMAIN,
+    });
+
+
+# 加uri：
  https://console.developers.google.com/apis/credentials
 ---------------------------------------------------------------------------
 
 # 项目使用技术：
  1. Webpack: 模块打包机(module bundler)，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），并将其转换和打包为合适的格式<b>供浏览器使用</b>。能打包更多不同类型的文件。public文件夹用来存放之后供浏览器读取的文件，包括使用webpack打包生成的js文件。配置文件，webpack.config.js，目前的配置主要涉及到的内容是入口文件路径(entry)和打包后文件的存放路径(output)。
+ Webpack的强大功能: 
+ 1.生成Source Maps（使调试更容易）
+开发总是离不开调试，方便的调试能极大的提高开发效率，不过有时候通过打包后的文件，你是不容易找到出错了的地方，对应的你写的代码的位置的，Source Maps就是来帮我们解决这个问题的。通过简单的配置，webpack就可以在打包时为我们生成的source maps，这为我们提供了一种对应编译文件和源文件的方法，使得编译后的代码可读性更高，也更容易调试。
+ 2.使用webpack构建本地服务器
+想不想让你的浏览器监听你的代码的修改，并自动刷新显示修改后的结果，其实Webpack提供一个可选的本地开发服务器，这个本地服务器基于node.js构建，可以实现你想要的这些功能，不过它是一个单独的组件，在webpack中进行配置之前需要单独安装它作为项目依赖
+ 3.对React的开发而言，合适的Loaders可以把React的中用到的JSX文件转换为JS文件。
+ 4.<b>Babel</b>其实是一个编译JavaScript的平台，它可以编译代码帮你达到以下目的：
+让你能使用最新的JavaScript代码（ES6，ES7...），而不用管新标准是否被当前使用的浏览器完全支持；
+让你能使用基于JavaScript进行了拓展的语言，比如React的JSX；Babel其实可以完全在 webpack.config.js 中进行配置，但是考虑到babel具有非常多的配置选项，在单一的webpack.config.js文件中进行配置往往使得这个文件显得太复杂，因此一些开发者支持把babel的配置选项放在一个单独的名为 ".babelrc" 的配置文件中。我们现在的babel的配置并不算复杂，不过之后我们会再加一些东西，因此现在我们就提取出相关部分，分两个配置文件进行配置（webpack会自动调用.babelrc里的babel配置选项）
+ 5.<b>Hot Module Replacement(HMR)</b>: <b>A plugin of webpack.</b>
+ Hot Module Replacement (HMR) exchanges, adds, or removes modules while an application is running, <b>without a full reload</b>. This can significantly speed up development in a few ways:
+<b>Retain application state</b> which is lost during a full reload.
+Save valuable development time by <b>only updating what's changed.</b>
+Instantly update the browser when modifications are made to CSS/JS in the source code, which is almost comparable to changing styles directly in the browser's dev tools.
+ 6. <b>Babel</b>: Babel is a JavaScript compiler. Babel is a toolchain that is mainly used to convert ECMAScript 2015+ code into a backwards <b>compatible</b> version of JavaScript in current and <b>older browsers</b> or environments. Here are the main things Babel can do for you: Transform syntax, Polyfill features that are missing in your target environment (through @babel/polyfill), Source code transformations(codemods)
+  Babel和webpack是独立的工具
+  二者可以一起工作
+  二者都可以通过插件拓展功能
+
 
  * <b>Why webpack</b>: To understand why you should use webpack, let's recap how we used JavaScript on the web before bundlers were a thing.There are two ways to run JavaScript in a browser. First, include a script for each functionality; this solution is hard to scale because <b>loading too many scripts can cause a network bottleneck</b>. The second option is to use a big .js file containing all your project code, but this leads to problems in scope, size, <b>readability and maintainability</b>.
 
@@ -127,3 +159,12 @@ The <b>use property</b> indicates which <b>loader</b> should be used to do the t
 *<b>Plugins</b>: While loaders are used to transform certain types of modules, plugins can be leveraged to <b>perform a wider range of tasks</b> like bundle optimization, asset management and injection of environment variables.
 
 *<b>Browser Compatibility</b>: webpack supports all browsers that are ES5-compliant (IE8 and below are not supported). webpack needs Promise for import() and require.ensure(). If you want to support older browsers, you will need to load a polyfill before using these expressions.
+
+2. Proxy
+https://medium.com/@bhupendra.nitt/proxy-server-to-bypass-cors-106c1884ef04
+use a proxy to avoid CORS(Cross-Origin Resource Sharing)
+
+3. Ajax
+Ajax的全称是Asynchronous JavaScript and XML 中文名称定义为异步的JavaScript和XML。Ajax是Web2.0技术的核心由多种技术集合而成，使用Ajax技术不必刷新整个页面，只需对页面的局部进行更新，可以节省网络带宽，提高页面的加载速度，从而缩短用户等待时间，改善用户体验
+
+4. React Hooks: Hooks 是一项新功能提案，可让您在不编写类的情况下使用 state(状态) 和其他 React 功能
