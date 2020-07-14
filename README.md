@@ -1,4 +1,7 @@
 # web_dev
+
+https://tracker-ui-sry19.herokuapp.com/
+
 Please 'npm install' && 'create .env' before run the app.
 --------------------------------------
 * React life cycle: https://flaviocopes.com/react-lifecycle-events/#:~:text=React%20class%20components%20can%20have,hook%20and%20provide%20custom%20functionality.
@@ -168,3 +171,46 @@ use a proxy to avoid CORS(Cross-Origin Resource Sharing)
 Ajax的全称是Asynchronous JavaScript and XML 中文名称定义为异步的JavaScript和XML。Ajax是Web2.0技术的核心由多种技术集合而成，使用Ajax技术不必刷新整个页面，只需对页面的局部进行更新，可以节省网络带宽，提高页面的加载速度，从而缩短用户等待时间，改善用户体验
 
 4. React Hooks: Hooks 是一项新功能提案，可让您在不编写类的情况下使用 state(状态) 和其他 React 功能
+
+5. power of SSR(server-side rendering)
+Google's 2 way indexing : 
+https://medium.com/@benjburkholder/javascript-seo-server-side-rendering-vs-client-side-rendering-bc06b8ca2383
+
+https://medium.com/pickyourtrail-tech/slow-page-load-not-anymore-the-magic-of-server-side-rendering-f236733e1927
+
+combine client-side rendering & server-side rendering (其实一般用csr更好，只是第一次render的时候csr download js,parse,execute and insert to DOM 更费时间)
+https://books.google.com/books?id=6OjJCgAAQBAJ&pg=PT241&lpg=PT241&dq=server+side+rendering+reduce+boot+latency&source=bl&ots=gYdgpFQhw8&sig=ACfU3U1XpRoUxchdS1E2vbdqJUDxFLtPWQ&hl=en&sa=X&ved=2ahUKEwinqaLVm83qAhV5IDQIHVL1BhsQ6AEwDXoECAoQAQ#v=onepage&q=server%20side%20rendering%20reduce%20boot%20latency&f=false
+-----------------------------------------------------------------------
+
+# web知识
+
+1. HTTP（stateless) VS HTTPS
+超文本传输协议HTTP协议被用于在Web浏览器和网站服务器之间传递信息，HTTP协议以明文方式发送内容，不提供任何方式的数据加密，如果攻击者截取了Web浏览器和网站服务器之间的传输报文，就可以直接读懂其中的信息，因此，HTTP协议不适合传输一些敏感信息，比如：信用卡号、密码等支付信息。
+为了解决HTTP协议的这一缺陷，需要使用另一种协议：安全套接字层超文本传输协议HTTPS，为了数据传输的安全，HTTPS在HTTP的基础上加入了<b>SSL（Secure Sockets Layer）协议</b>，SSL依靠证书来验证服务器的身份，并为浏览器和服务器之间的通信加密。
+SSL的作用(1）、认证用户和服务器，确保数据发送到正确的客户机和服务器；（2）、加密数据以防止数据中途被窃取；（3）、维护数据的完整性，确保数据在传输过程中不被改变。
+https://juejin.im/entry/58d7635e5c497d0057fae036
+
+2. Cookie
+Cookie是客户端保存用户信息的一种机制，用来记录用户的一些信息，实际上Cookie是服务器在本地机器上存储的一小段文本，并随着每次请求发送到服务器。Cookie技术通过请求和响应报文中写入Cookie信息来控制客户端的状态。Cookie会根据响应报文里的一个叫做Set-Cookie的首部字段信息，通知客户端保存Cookie。当下客户端再向服务端发起请求时，客户端会自动在请求报文中加入Cookie值之后发送出去.之后服务端发现客户端发送过来的Cookie后，会检查是那个客户端发送过来的请求，然后对服务器上的记录，最后得到了之前的状态信息。
+
+3. Session
+上面我讲到服务端执行session机制时候会生成session的id值，这个id值会发送给客户端，客户端每次请求都会把这个id值放到http请求的头部发送给服务端，<b>而这个id值在客户端会保存下来，保存的容器就是cookie</b>，因此当我们完全禁掉浏览器的cookie的时候，服务端的session也会不能正常使用。 PHP中的Session在默认情况下是使用客户端的Cookie来保存Session ID的，所以当客户端的cookie出现问题的时候就会影响Session了。必须注意的是：<b>Session不一定必须依赖Cookie</b>，这也是Session相比Cookie的高明之处。当客户端的Cookie被禁用或出现问题时，PHP会自动把Session ID附着在URL中，这样再通过Session ID就能跨页使用Session变量了。
+
+4. Cookie与Session的区别
+cookie数据存放在客户的浏览器（客户端）上，session数据放在服务器上，但是服务端的session的实现对客户端的cookie有依赖关系的；cookie不是很安全，别人可以分析存放在本地的COOKIE并进行COOKIE欺骗，考虑到安全应当使用session；session会在一定时间内保存在服务器上。当访问增多，会比较占用你服务器的性能。考虑到减轻服务器性能方面，应当使用COOKIE；单个cookie在客户端的限制是3K，就是说一个站点在客户端存放的COOKIE不能超过3K；
+
+5. 傻傻分不清之 Cookie、Session、Token、JWT
+JSON Web Token（简称 JWT）是目前最流行的<b>跨域认证</b>解决方案。
+是一种<b>认证授权机制</b>。
+http://www.ruanyifeng.com/blog/2018/07/json_web_token-tutorial.html
+https://juejin.im/post/5e055d9ef265da33997a42cc
+
+6. OAuth
+OAuth is an authorization protocol, rather than an authentication protocol.
+
+7. DOM
+变成树状，浏览器首先将收到的html代码，通过html解析器解析构建为一颗DOM树。浏览器按从上到下，从左到右的顺序，读取DOM树的文档节点，顺序存放到一条虚拟的传送带上。传送带上的盒子就是节点，而这条流动的传送带就是文档流。如果我们读取到的节点是属于另一个节点下的子节点，那么在放入传送带的时候，就应该按顺序放到该节点盒子的内部。文档流排完之后，开始获取计算节点的坐标和大小等CSS属性，作为盒子的包装说明。
+然后把盒子在仓库里一一摆放，这就将节点布局到了页面。布局完成之后，我们在页面上其实是看不到任何内容的
+浏览器只是计算出了每一个节点对象应该被放到页面的哪个位置上，但并没有可视化。
+因此最后一步就是将所有内容绘制出来，完成整个页面的渲染。
+https://www.zhihu.com/question/34219998
