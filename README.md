@@ -80,7 +80,7 @@ Environment variables can also be provided as actual operating system environmen
 * webpack
 the issuetracker app is running on port 8000. But the API (the service that provides data to the app) is running on 3000. So yes, you've got two servers running, and at least for Chapter 7 "run watch" is a separate command. In Chapter 8 Webpack gets introduced and things get rearranged a bit. You'll still be running UI and API from separate terminals. These have been separated into two independent, loosely coupled components of your application.
 
-* In cookie domain section, we are asked to modify '/etc/hosts' file.
+# In cookie domain section, we are asked to modify '/etc/hosts' file.
 https://apple.stackexchange.com/questions/160042/why-cannot-i-edit-my-hosts-file
 use 'sudo nano /etc/hosts' to edit the file, I added 
 
