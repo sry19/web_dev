@@ -84,8 +84,8 @@ the issuetracker app is running on port 8000. But the API (the service that prov
 https://apple.stackexchange.com/questions/160042/why-cannot-i-edit-my-hosts-file
 use 'sudo nano /etc/hosts' to edit the file, I added 
 
-'# cookie domain for issue tracker project
-127.0.0.1 api.promernstack.com ui.promernstack.com'
+# cookie domain for issue tracker project
+127.0.0.1 api.promernstack.com ui.promernstack.com
 
 
 * mongodb atlas:
