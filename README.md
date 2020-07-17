@@ -33,6 +33,7 @@ step3: Click on install and follow the rest of the instructions in prompt to rei
 
 issues have not solved:
 * (Multiple Environments) cannot use the environment variable to change the port number
+-- solved now 07/16/2020
 
 Ch8:
 summary:
@@ -214,3 +215,5 @@ OAuth is an authorization protocol, rather than an authentication protocol.
 浏览器只是计算出了每一个节点对象应该被放到页面的哪个位置上，但并没有可视化。
 因此最后一步就是将所有内容绘制出来，完成整个页面的渲染。
 https://www.zhihu.com/question/34219998
+
+8. SEO: Search Engine Optimization. Server-side Rendering可以帮助搜索引擎搜到你的网站
