@@ -4,6 +4,7 @@ https://tracker-ui-sry19.herokuapp.com/
 
 Please 'npm install' && 'create .env' before run the app.
 --------------------------------------
+* test the performance of ssr and non-ssr: https://davidea.st/articles/measuring-server-side-rendering-performance-is-tricky
 * React life cycle: https://flaviocopes.com/react-lifecycle-events/#:~:text=React%20class%20components%20can%20have,hook%20and%20provide%20custom%20functionality.
 
 Ch5:
